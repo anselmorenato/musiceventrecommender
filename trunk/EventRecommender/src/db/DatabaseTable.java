@@ -1,8 +1,6 @@
 package db;
 
-import java.io.File;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -10,28 +8,43 @@ import java.sql.Statement;
 import music.MusicItem;
 
 public abstract class DatabaseTable {
-	private String dbPath;
-	final protected Connection conn;
 	
-	public DatabaseTable(File db) throws DatabaseException {
+	final protected Connection conn;
+	protected PreparedStatement updateStat;
+	protected PreparedStatement insertStat;
+	
+	public DatabaseTable(Connection dbconn, boolean createTable) throws DatabaseException{
+		conn = dbconn;
 		try {
-			Class.forName("org.sqlite.JDBC");
-		} catch (ClassNotFoundException e) {
-			System.out.println("CLASS NOT FOUND!");
-			throw new DatabaseException(e.getMessage());
+			if (createTable) {
+				create();
+			}
+			prepareStatements();
+		} catch (SQLException e) {
+			throw new DatabaseException(e);
 		}
-		this.dbPath = "jdbc:sqlite:" + db.getAbsolutePath();
-		
-		
+	}
+	
+	/**
+	 * Will not create tables if they don't exist.
+	 * @param dbconn
+	 * @throws DatabaseException
+	 */
+	public DatabaseTable(Connection dbconn) throws DatabaseException{
+		conn = dbconn;
 		try {
-			this.conn = DriverManager.getConnection(dbPath);
-			this.conn.setAutoCommit(false);
+			prepareStatements();
 		} catch (SQLException e) {
 			throw new DatabaseException(e);
 		}
 	}
 
 	protected abstract String getCreateStatement();
+	
+	protected void prepareStatements() throws SQLException {
+		this.updateStat = updateStatement();
+		this.insertStat = insertStatement();
+	}
 	
 	public void create() throws DatabaseException {
 		String createSQL = getCreateStatement();
@@ -43,48 +56,11 @@ public abstract class DatabaseTable {
 		}
 	}
 		
-	private int executeUpdate(PreparedStatement stat) throws DatabaseException {
-		int rows = 0;
-		
-		try {
-			rows = stat.executeUpdate();
-		} catch (SQLException e) {
-			throw new DatabaseException(e);
-		}
-		
-		return rows;	
-	}
+	protected abstract PreparedStatement insertStatement() throws SQLException;
+	protected abstract PreparedStatement updateStatement() throws SQLException;
 	
-	protected abstract PreparedStatement getInsertStatement() throws SQLException;
-	protected abstract void populateInsert(PreparedStatement p, MusicItem item) throws SQLException;
-	
-	public int insert(MusicItem item) throws DatabaseException {
-		PreparedStatement stat;
-		try {
-			stat = getInsertStatement();
-			populateInsert(stat, item);
-		} catch (SQLException e) {
-			throw new DatabaseException(e);
-		}
-		
-		return executeUpdate(stat);
-	}
-	
-	protected abstract PreparedStatement getUpdateStatement() throws SQLException;
-	protected abstract void populateUpdate(PreparedStatement p, MusicItem item) throws SQLException;
-	
-	public int update(MusicItem item) throws DatabaseException {
-		PreparedStatement stat;
-		try {
-			stat = getUpdateStatement();
-			populateUpdate(stat, item);
-		} catch (SQLException e) {
-			throw new DatabaseException(e);
-		}
-		
-		return executeUpdate(stat);
-	}
-	
+	public abstract int update(MusicItem item) throws DatabaseException;
+	public abstract int insert(MusicItem item) throws DatabaseException;
 	public abstract boolean contains(MusicItem item) throws DatabaseException;
 	
 	/**
@@ -93,6 +69,9 @@ public abstract class DatabaseTable {
 	 * @throws DatabaseException 
 	 */
 	public void close() throws DatabaseException {
+		/* TODO
+		 * should this close the connection or just the statements?
+		 */
 		try {
 			conn.commit();
 		} catch (SQLException e) {

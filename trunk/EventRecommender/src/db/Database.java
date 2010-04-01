@@ -1,6 +1,8 @@
 package db;
 
 import java.io.File;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import music.Artist;
@@ -9,6 +11,7 @@ import music.Song;
 
 public class Database {
 	final private File dbfile;
+	
 	
 	public Database(String path) throws DatabaseException {
 		
@@ -26,29 +29,48 @@ public class Database {
 
 	}
 	
-	private void createTable(DatabaseTable table) throws DatabaseException {
-		table.create();
-		table.close();
+	private Connection connect() throws DatabaseException {
+		Connection conn;
+		try {
+			Class.forName("org.sqlite.JDBC");
+		} catch (ClassNotFoundException e) {
+			System.out.println("CLASS NOT FOUND!");
+			throw new DatabaseException(e.getMessage());
+		}
+		String dbPath = "jdbc:sqlite:" + dbfile.getAbsolutePath();
+		
+		try {
+			conn = DriverManager.getConnection(dbPath);
+			conn.setAutoCommit(false);
+			return conn;
+		} catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
 	}
 	
 	private void createDatabase() throws DatabaseException {
-		ArtistsTable artists = new ArtistsTable(dbfile);
-		createTable(artists);
 		
-		SimilarArtistsTable similar = new SimilarArtistsTable(dbfile);
-		createTable(similar);
+		Connection conn = connect();
 		
-		SongsTable songs = new SongsTable(dbfile);
-		createTable(songs);
+		ArtistsTable artists = new ArtistsTable(conn, true);
 		
-		VenuesTable venues = new VenuesTable(dbfile);
-		createTable(venues);
+		SimilarArtistsTable similar = new SimilarArtistsTable(conn, true);
 		
-		EventsTable events = new EventsTable(dbfile);
-		createTable(events);
+		SongsTable songs = new SongsTable(conn, true);
 		
-		EventArtistMapTable eamap = new EventArtistMapTable(dbfile);
-		createTable(eamap);
+		VenuesTable venues = new VenuesTable(conn, true);
+		
+		EventsTable events = new EventsTable(conn, true);
+		
+		EventArtistMapTable eamap = new EventArtistMapTable(conn, true);
+		
+		try {
+			conn.commit();
+			conn.close();
+		} catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
+		
 	}
 	
 	/**
@@ -61,8 +83,10 @@ public class Database {
 	}
 	
 		
-	private boolean artistExists(Artist artist) {
-		return false;
+	private boolean artistExists(Artist artist) throws DatabaseException {
+		Connection conn = connect();
+		ArtistsTable at = new ArtistsTable(conn);
+		return at.contains(artist);
 	}
 	
 	/**
@@ -93,7 +117,9 @@ public class Database {
 	 */
 	public void syncArtist(Artist artist) throws DatabaseException{
 		
-		ArtistsTable artists = new ArtistsTable(dbfile);
+		Connection conn = connect();
+		
+		ArtistsTable artists = new ArtistsTable(conn);
 		
 		sync(artists, artist);
 		
@@ -107,7 +133,8 @@ public class Database {
 	 * @throws DatabaseException 
 	 */
 	public void syncSong(Song song) throws DatabaseException {
-		SongsTable songs = new SongsTable(dbfile);
+		Connection conn = connect();
+		SongsTable songs = new SongsTable(conn);
 		
 		this.syncArtist(song.getArtist());
 		
