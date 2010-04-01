@@ -1,6 +1,6 @@
 package db;
 
-import java.io.File;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,13 +9,16 @@ import music.Artist;
 import music.MusicItem;
 
 
-
 public class ArtistsTable extends DatabaseTable{
-
-	public ArtistsTable(File db) throws DatabaseException {
-		super(db);
+	
+	public ArtistsTable(Connection c) throws DatabaseException {
+		super(c);
 	}
-
+	
+	public ArtistsTable(Connection c, boolean createTable) throws DatabaseException {
+		super(c, createTable);
+	}
+	
 	@Override
 	protected String getCreateStatement() {
 		String SQL = "CREATE TABLE artists" +
@@ -30,41 +33,60 @@ public class ArtistsTable extends DatabaseTable{
 	}
 
 	@Override
-	protected PreparedStatement getInsertStatement() throws SQLException {
-		PreparedStatement prep = conn.prepareStatement(
+	protected PreparedStatement insertStatement() throws SQLException {
+		
+		PreparedStatement p = conn.prepareStatement(
 				"insert into artists (mbid, name, playcount) " +
 		"values (?, ?, ?)");
-
-		return prep;
+		
+		return p;
 	}
 
 	@Override
-	protected PreparedStatement getUpdateStatement() throws SQLException {
-		PreparedStatement prep = conn.prepareStatement(
-				"update artists " +
-				"set mbid = ?," +
+	protected PreparedStatement updateStatement() throws SQLException {
+		
+		PreparedStatement p = conn.prepareStatement(
+				"update artists SET " +
 				"name = ?," +
 				"playcount = ? where mbid = ?");
-
-		return prep;
+		
+		return p;
 	}
-
+	
 	@Override
-	protected void populateInsert(PreparedStatement p, MusicItem item) throws SQLException {
-		Artist a = (Artist) item;
-		p.setString(1, a.getMBID());
-		p.setString(2, a.getName());
-		p.setInt(3, a.getPlaycount());
+	public int insert(MusicItem item) throws DatabaseException {
+		PreparedStatement stat;
+		try {
+			stat = updateStatement();
+			
+			Artist a = (Artist) item;
+            stat.setString(1, a.getMBID());
+            stat.setString(2, a.getName());
+            stat.setInt(3, a.getPlaycount());
+			
+            int rows = stat.executeUpdate();
+            return rows;
+		} catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
 	}
+	
+	public int update(MusicItem item) throws DatabaseException {
+		PreparedStatement stat;
+		try {
+			stat = updateStatement();
+			
+			 Artist a = (Artist) item;
+             stat.setString(1, a.getName());
+             stat.setInt(2, a.getPlaycount());
+             stat.setString(3, a.getMBID());
 
-	@Override
-	protected void populateUpdate(PreparedStatement p, MusicItem item) throws SQLException {
-
-		Artist a = (Artist) item;
-		p.setString(1, a.getMBID());
-		p.setString(2, a.getName());
-		p.setInt(3, a.getPlaycount());
-		p.setString(4, a.getMBID());
+             int rows = stat.executeUpdate();
+             return rows;
+             
+		} catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
 	}
 
 	@Override
@@ -82,5 +104,4 @@ public class ArtistsTable extends DatabaseTable{
 			throw new DatabaseException(e);
 		}
 	}
-
 }

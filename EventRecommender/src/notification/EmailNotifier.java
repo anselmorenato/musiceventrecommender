@@ -1,5 +1,13 @@
 package notification;
 
-public class EmailNotifier {
+import schedulers.Schedulable;
+
+public class EmailNotifier implements Schedulable{
+
+	public void run() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	
 }
