@@ -9,6 +9,8 @@ public class DatabaseException extends Exception{
 	public DatabaseException(SQLException sql) {
 		super(sql.getMessage());
 		this.sql = sql;
+		System.err.println(sql.getMessage());
+		sql.printStackTrace();
 	}
 	
 	public DatabaseException(String msg) {
