@@ -57,7 +57,7 @@ public class ArtistsTable extends DatabaseTable{
 	public int insert(MusicItem item) throws DatabaseException {
 		PreparedStatement stat;
 		try {
-			stat = updateStatement();
+			stat = insertStatement();
 			
 			Artist a = (Artist) item;
             stat.setString(1, a.getMBID());

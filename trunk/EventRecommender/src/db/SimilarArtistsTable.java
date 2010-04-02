@@ -54,7 +54,7 @@ public class SimilarArtistsTable extends DatabaseTable {
 	public int insert(MusicItem item) throws DatabaseException {
 		PreparedStatement stat;
 		try {
-			stat = updateStatement();
+			stat = insertStatement();
 
 			Artist a = (Artist) item;
 			int rows = 0;

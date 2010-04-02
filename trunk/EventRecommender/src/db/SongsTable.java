@@ -55,7 +55,7 @@ public class SongsTable extends DatabaseTable {
 	public int insert(MusicItem item) throws DatabaseException {
 		PreparedStatement stat;
 		try {
-			stat = updateStatement();
+			stat = insertStatement();
 			
 			Song s = (Song) item;
 			stat.setString(1, s.getTitle());
