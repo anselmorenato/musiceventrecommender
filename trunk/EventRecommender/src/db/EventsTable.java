@@ -25,7 +25,7 @@ public class EventsTable extends DatabaseTable {
 		"title VARCHAR(80) NOT NULL," +
 		"venue integer NOT NULL," +
 		"date text NOT NULL," +
-		"decription text," +
+		"description text," +
 		"website VARCHAR(80)," + 
 		"ticketsite VARCHAR(80)," +
 		"PRIMARY KEY (id)," +
