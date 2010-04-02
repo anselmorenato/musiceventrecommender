@@ -4,6 +4,7 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.List;
 
 import music.Artist;
 import music.MusicItem;
@@ -150,5 +151,14 @@ public class Database {
 		
 		songsTable.closeConnection();
 	}
+	
+	public List<Artist> getTopArtists(int count) {
+		return null;
+	}
+	
+	public List<Artist> getSimilarArtists(Artist a) {
+		return null;
+	}
+	
 	
 }
