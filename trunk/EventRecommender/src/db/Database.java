@@ -4,6 +4,7 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 
 import music.Artist;
@@ -152,8 +153,14 @@ public class Database {
 		songsTable.closeConnection();
 	}
 	
-	public List<Artist> getTopArtists(int count) {
-		return null;
+	public List<Artist> getTopArtists(int count) throws DatabaseException {
+		if (count <= 0)
+			return new LinkedList<Artist>();
+		
+		Connection conn = connect();
+		ArtistsTable at = new ArtistsTable(conn);
+		
+		return at.getMostPlayedArtists(count);
 	}
 	
 	public List<Artist> getSimilarArtists(Artist a) {
