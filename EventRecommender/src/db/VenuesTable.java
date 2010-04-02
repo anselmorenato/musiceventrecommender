@@ -62,7 +62,7 @@ public class VenuesTable extends DatabaseTable {
 	public int insert(MusicItem item) throws DatabaseException {
 		PreparedStatement stat;
 		try {
-			stat = updateStatement();
+			stat = insertStatement();
 			
 			Venue v = (Venue) item;
 			stat.setInt(1, v.getID());

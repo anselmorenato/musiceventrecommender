@@ -66,7 +66,7 @@ public class EventsTable extends DatabaseTable {
 	public int insert(MusicItem item) throws DatabaseException {
 		PreparedStatement stat;
 		try {
-			stat = updateStatement();
+			stat = insertStatement();
 			
 			Event e = (Event) item;
 			
