@@ -68,24 +68,16 @@ public abstract class DatabaseTable {
 	 * This commits all changes
 	 * @throws DatabaseException 
 	 */
-	public void close() throws DatabaseException {
+	public void closeConnection() throws DatabaseException {
 		/* TODO
 		 * should this close the connection or just the statements?
 		 */
-		try {
-			conn.commit();
-		} catch (SQLException e) {
-			try {
-				conn.close();
-			} catch (SQLException e1) {
-				throw new DatabaseException(e1);
-			}
-			throw new DatabaseException(e);
-		}
+		
 		try {
 			conn.close();
 		} catch (SQLException e) {
 			throw new DatabaseException(e);
 		}
+		
 	}
 }
