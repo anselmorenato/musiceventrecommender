@@ -1,5 +1,8 @@
 package datasources;
 
+import java.util.List;
+
+import music.Artist;
 import music.MusicItemException;
 import music.Song;
 import net.roarsoftware.lastfm.Caller;
@@ -7,6 +10,8 @@ import net.roarsoftware.lastfm.Caller;
 public class LastFM {
 	private String apiKey = "1cfb666ab23d365a4cdcc13044d47f33";
 	private String userAgent = "tst";
+	private int reqCount = 0;
+	private int delay = 1100; /* milliseconds */
 		
 	public LastFM() {
 		Caller.getInstance().setUserAgent(userAgent);
@@ -17,7 +22,15 @@ public class LastFM {
 	 * averaged over 5 seconds
 	 */
 	public void delay() {
-		
+		if (reqCount >= 5) {
+			reqCount = 0;
+			try {
+				Thread.sleep(delay);
+			} catch (InterruptedException e) {
+				System.err.println(e.getMessage());
+			}
+		}
+		reqCount++;
 	}
 	
 	/**
@@ -71,5 +84,9 @@ public class LastFM {
 			return null;
 		}
 		return song;
+	}
+	
+	public List<music.Event> getArtistEvents(Artist a) {
+		return null;
 	}
 }
