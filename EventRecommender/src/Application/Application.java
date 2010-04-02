@@ -27,8 +27,9 @@ public class Application {
 			System.err.println("Database error: " + e.getMessage());
 		}
 		
-		String directory = prefs.getMusicLibraryPath();
-		MusicImporter im = new MusicImporter(db, directory, "");
+		String musicdir = prefs.getMusicLibraryPath();
+		String itunes = prefs.getItunesLibraryPath();
+		MusicImporter im = new MusicImporter(db, musicdir, itunes);
 		im.run();
 	}
 	
