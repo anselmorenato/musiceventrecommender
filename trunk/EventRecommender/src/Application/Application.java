@@ -1,4 +1,4 @@
-package schedulers;
+package Application;
 
 import scanners.MusicImporter;
 import db.Database;
@@ -10,6 +10,10 @@ public class Application {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		/* TODO:
+		 * - run configuration file
+		 * - delegate to the scheduler
+		 */
 		Database db = null;
 		try {
 			db = new Database("test.db");
