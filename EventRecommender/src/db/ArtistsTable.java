@@ -4,9 +4,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.LinkedList;
+import java.util.List;
 
 import music.Artist;
 import music.MusicItem;
+import music.MusicItemException;
 
 
 public class ArtistsTable extends DatabaseTable{
@@ -88,7 +92,76 @@ public class ArtistsTable extends DatabaseTable{
 			throw new DatabaseException(e);
 		}
 	}
+	
+	/*"mbid character(37) NOT NULL," +
+	"name VARCHAR(80) NOT NULL," +
+	"playcount integer DEFAULT 0," +
+	"PRIMARY KEY (mbid)" +
+	");";*/
+	
+	/**
+	 * Creates an Artist object from a single entry in the result set
+	 * @param rs - A result set
+	 * @return - The artist
+	 * @throws SQLException 
+	 */
+	private Artist makeArtist(ResultSet rs) throws SQLException {
+		String mbid = rs.getString("mbid");
+		String name = rs.getString("name");
+		int playcount = rs.getInt("playcount");
+		
+		Artist a;
+		try {
+			a = new Artist(mbid, name);
+		} catch (MusicItemException e) {
+			System.err.println(e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+		
+		a.setPlaycount(playcount);
+		return a;
+	}
 
+	/** 
+	 * Get at most limit artists which have the highest play count over all artists
+	 * @param limit the maximum number of artists to return
+	 * @return A list of most played artists
+	 */
+	public List<Artist> getMostPlayedArtists(int limit) throws DatabaseException {
+		String sql = "SELECT * FROM Artists " +
+				"ORDER BY playcount " +
+				"LIMIT " + limit;
+		
+		ResultSet rs;
+		LinkedList<Artist> top = new LinkedList<Artist>();
+		
+		try {
+			Statement select = conn.createStatement();
+			rs = select.executeQuery(sql);
+		} catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
+		
+		try {
+			while(rs.next()) {
+				Artist a = makeArtist(rs);
+				if (a != null)
+					top.add(a);
+			}
+		} catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
+		
+		try {
+			rs.close();
+		} catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
+		
+		return top;
+	}
+	
 	@Override
 	public boolean contains(MusicItem item) throws DatabaseException {
 		Artist a = (Artist) item;
