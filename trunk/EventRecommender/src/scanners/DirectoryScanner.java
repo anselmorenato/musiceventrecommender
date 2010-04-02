@@ -12,7 +12,7 @@ public class DirectoryScanner implements Scanner{
 	final private ReadableDirectoryFilter dirFilter;
 	final private MP3FileFilter musicFilter;
 	final File root;
-	public List<ScannerObserver> observers;
+	private List<ScannerObserver> observers;
 	
 	public DirectoryScanner(String root) {
 		this.root = new File(root);
