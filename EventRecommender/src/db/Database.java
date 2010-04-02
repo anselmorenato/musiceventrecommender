@@ -153,6 +153,12 @@ public class Database {
 		songsTable.closeConnection();
 	}
 	
+	/**
+	 * Get a list of 'top' artists
+	 * @param count - Maximum number of artists to return
+	 * @return A list of at most count of the top artists
+	 * @throws DatabaseException
+	 */
 	public List<Artist> getTopArtists(int count) throws DatabaseException {
 		if (count <= 0)
 			return new LinkedList<Artist>();
@@ -163,8 +169,28 @@ public class Database {
 		return at.getMostPlayedArtists(count);
 	}
 	
-	public List<Artist> getSimilarArtists(Artist a) {
-		return null;
+	/**
+	 * Get a list of artists similar to the given one
+	 * @param theArtist - the artist
+	 * @return A list of similar artists
+	 * @throws DatabaseException
+	 */
+	public List<Artist> getSimilarArtists(Artist theArtist) throws DatabaseException {
+		Connection conn = connect();
+		LinkedList<Artist> similar = new LinkedList<Artist>();
+		
+		
+		SimilarArtistsTable simTable = new SimilarArtistsTable(conn);
+		ArtistsTable artTable = new ArtistsTable(conn);
+		
+		List<String> mbids = simTable.getSimilar(theArtist);
+		for (String mbid : mbids) {
+			Artist a = artTable.getArtist(mbid);
+			if (a != null)
+				similar.add(a);
+		}
+		
+		return similar;
 	}
 	
 	

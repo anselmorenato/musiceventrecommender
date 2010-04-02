@@ -123,6 +123,44 @@ public class ArtistsTable extends DatabaseTable{
 		return a;
 	}
 
+	/**
+	 * Get an artist
+	 * @param mbid - the artists mbid
+	 * @return The artist
+	 * @throws DatabaseException 
+	 */
+	public Artist getArtist(String mbid) throws DatabaseException {
+		String sql = "SELECT * FROM artists " +
+				"WHERE mbid = " + mbid;
+		
+		ResultSet rs;
+		
+		
+		try {
+			Statement select = conn.createStatement();
+			rs = select.executeQuery(sql);
+		} catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
+		
+		Artist a = null;
+		try {
+			while(rs.next()) {
+				a = makeArtist(rs);
+			}
+		} catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
+		
+		try {
+			rs.close();
+		} catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
+		
+		return a;
+	}
+	
 	/** 
 	 * Get at most limit artists which have the highest play count over all artists
 	 * @param limit the maximum number of artists to return

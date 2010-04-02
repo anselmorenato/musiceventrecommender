@@ -2,7 +2,11 @@ package db;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.LinkedList;
+import java.util.List;
 
 import music.Artist;
 import music.MusicItem;
@@ -92,6 +96,52 @@ public class SimilarArtistsTable extends DatabaseTable {
 		} catch (SQLException e) {
 			throw new DatabaseException(e);
 		}
+	}
+	
+	/*"artist character(37) NOT NULL," +
+		"similar character(37) NOT NULL," +
+		"PRIMARY KEY (artist,similar)," +
+		"FOREIGN KEY (similar) REFERENCES artists(mbid)" +*/
+	
+	/**
+	 * Get the mbids of artists similar to the given artist
+	 * @param a the artist
+	 * @return
+	 * @throws DatabaseException 
+	 */
+	public List<String> getSimilar(Artist a) throws DatabaseException {
+		String sql = "SELECT similar " +
+				"FROM similarartists " +
+				"WHERE artist = " +
+				a.getMBID();
+		
+		LinkedList<String> mbids = new LinkedList<String>();
+		
+		ResultSet rs;
+		try {
+			Statement select = conn.createStatement();
+			rs = select.executeQuery(sql);
+		} catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
+		
+		try {
+			while(rs.next()) {
+				String mbid = rs.getString("similar");
+				if (mbid != null)
+					mbids.add(mbid);
+			}
+		} catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
+		
+		try {
+			rs.close();
+		} catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
+		
+		return mbids;
 	}
 
 	@Override
