@@ -52,6 +52,13 @@ public class Database {
 		
 		Connection conn = connect();
 		
+		/* Make this a transaction */
+		try {
+			conn.setAutoCommit(false);
+		} catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
+		
 		ArtistsTable artists = new ArtistsTable(conn, true);
 		
 		SimilarArtistsTable similar = new SimilarArtistsTable(conn, true);
