@@ -8,13 +8,19 @@ import java.util.LinkedList;
 import java.util.List;
 
 import music.Artist;
+import music.Event;
 import music.MusicItem;
 import music.Song;
+import music.Venue;
 
 public class Database {
 	final private File dbfile;
 	
-	
+	/**
+	 * Constructor
+	 * @param path - path to the SQLite database
+	 * @throws DatabaseException
+	 */
 	public Database(String path) throws DatabaseException {
 		
 		File db = new File(path);
@@ -31,6 +37,11 @@ public class Database {
 
 	}
 	
+	/**
+	 * Connect to the database
+	 * @return An sql conncetion
+	 * @throws DatabaseException
+	 */
 	private Connection connect() throws DatabaseException {
 		Connection conn;
 		try {
@@ -49,6 +60,10 @@ public class Database {
 		}
 	}
 	
+	/**
+	 * Create all database tables
+	 * @throws DatabaseException
+	 */
 	private void createDatabase() throws DatabaseException {
 		
 		Connection conn = connect();
@@ -90,7 +105,12 @@ public class Database {
 		return null;
 	}
 	
-		
+	/**
+	 * Check if the given artist exists in the database
+	 * @param artist
+	 * @return true or false
+	 * @throws DatabaseException
+	 */
 	private boolean artistExists(Artist artist) throws DatabaseException {
 		Connection conn = connect();
 		ArtistsTable at = new ArtistsTable(conn);
@@ -125,7 +145,7 @@ public class Database {
 	 * @throws DatabaseException 
 	 * @throws DatabaseException 
 	 */
-	public void syncArtist(Artist artist) throws DatabaseException{
+	private void store(Artist artist) throws DatabaseException{
 		
 		Connection conn = connect();
 		
@@ -137,20 +157,54 @@ public class Database {
 	}
 	
 	/**
+	 * Add an event to the database
+	 * @param event - the event
+	 */
+	private void store(Event event) {
+		
+	}
+	
+
+	/**
+	 * Add a venue to the database
+	 * @param venue - the venue
+	 */
+	private void store(Venue venue) {
+		
+	}
+	
+	/**
+	 * Link an artist with an event
+	 * @param event - The event
+	 * @param artist - The artist
+	 */
+	private void linkArtistWithEvent(Event event, Artist artist) {
+		
+	}
+	
+	/**
 	 * Updates song in the database. If it does not exist then
 	 * it will be added
 	 * @param song The song to sync
 	 * @throws DatabaseException 
 	 */
-	public void syncSong(Song song) throws DatabaseException {
+	public void addSong(Song song) throws DatabaseException {
 		Connection conn = connect();
 		SongsTable songsTable = new SongsTable(conn);
 		
-		this.syncArtist(song.getArtist());
+		this.store(song.getArtist());
 		
 		sync(songsTable, song);
 		
 		songsTable.closeConnection();
+	}
+	
+	public void addEvent(Event event, List<Artist> participatingArtists) {
+		
+	}
+	
+	public void addSimilarArtists(Artist artist, List<Artist> similarAritsts) {
+		
 	}
 	
 	/**
@@ -192,6 +246,5 @@ public class Database {
 		
 		return similar;
 	}
-	
-	
+		
 }

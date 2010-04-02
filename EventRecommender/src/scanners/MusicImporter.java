@@ -14,11 +14,13 @@ public class MusicImporter implements ScannerObserver, Schedulable{
 	private Database db;
 	private String libraryPath;
 	private String metadataPath;
+	private LastFM lastfm;
 	
 	public MusicImporter(Database db, String libraryPath, String libraryMetadataPath) {
 		this.db = db;
 		this.libraryPath = libraryPath;
 		this.metadataPath = libraryMetadataPath;
+		this.lastfm = new LastFM();
 	}
 	
 	private void scanDirectory(String path) {
@@ -31,15 +33,13 @@ public class MusicImporter implements ScannerObserver, Schedulable{
 		
 	}
 	
-	public void songFound(String songName, String artistName,int playcount) {
-		LastFM lfm = new LastFM();
-		
+	public void songFound(String songName, String artistName,int playcount) {	
 		//Get artist data
-		Artist artist = lfm.lookupArtistByName(artistName);
+		Artist artist = lastfm.lookupArtistByName(artistName);
 		if (artist == null)
 			return;
 		
-		Song song = lfm.lookupSongByName(songName, artist);
+		Song song = lastfm.lookupSongByName(songName, artist);
 		if (song == null)
 			return;
 		
@@ -49,7 +49,7 @@ public class MusicImporter implements ScannerObserver, Schedulable{
 		
 		// Sync with database
 		try {
-			db.syncSong(song);
+			db.addSong(song);
 		} catch (DatabaseException e) {
 			System.err.println("Database Error: " + e.getMessage());
 			return;
