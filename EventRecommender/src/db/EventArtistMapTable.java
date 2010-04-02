@@ -34,7 +34,7 @@ public class EventArtistMapTable extends DatabaseTable {
 
 	@Override
 	protected PreparedStatement insertStatement() throws SQLException {
-		String sql = "INSERT INTO evertartistmap " +
+		String sql = "INSERT INTO eventartistmap " +
 		"(event, artist) " +
 		"VALUES (?, ?)";
 		PreparedStatement prep = conn.prepareStatement(sql);
@@ -43,8 +43,8 @@ public class EventArtistMapTable extends DatabaseTable {
 
 	@Override
 	protected PreparedStatement updateStatement() throws SQLException {
-		String sql = "UPDATE evertartistmap SET" +
-		"event = ?" +
+		String sql = "UPDATE eventartistmap SET " +
+		"event = ?," +
 		"artist = ?";
 
 		PreparedStatement prep = conn.prepareStatement(sql);

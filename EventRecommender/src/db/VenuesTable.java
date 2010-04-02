@@ -52,7 +52,7 @@ public class VenuesTable extends DatabaseTable {
 				"street = ?," +
 				"postalcode = ?," +
 				"latitude = ?," +
-				"lontitude = ? " +
+				"longitude = ? " +
 				"WHERE id = ?";
 		PreparedStatement prep = conn.prepareStatement(sql);
 		return prep;
