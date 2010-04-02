@@ -41,7 +41,6 @@ public class Database {
 		
 		try {
 			conn = DriverManager.getConnection(dbPath);
-			conn.setAutoCommit(false);
 			return conn;
 		} catch (SQLException e) {
 			throw new DatabaseException(e);
@@ -93,7 +92,9 @@ public class Database {
 	private boolean artistExists(Artist artist) throws DatabaseException {
 		Connection conn = connect();
 		ArtistsTable at = new ArtistsTable(conn);
-		return at.contains(artist);
+		boolean result = at.contains(artist);
+		at.closeConnection();
+		return result;
 	}
 	
 	/**
@@ -110,7 +111,7 @@ public class Database {
 			else	
 				table.insert(item);
 		} catch (DatabaseException e) {
-			table.close();
+			table.closeConnection();
 			throw e;
 		}
 	}
@@ -130,7 +131,7 @@ public class Database {
 		
 		sync(artists, artist);
 		
-		artists.close();
+		artists.closeConnection();
 	}
 	
 	/**
@@ -141,13 +142,13 @@ public class Database {
 	 */
 	public void syncSong(Song song) throws DatabaseException {
 		Connection conn = connect();
-		SongsTable songs = new SongsTable(conn);
+		SongsTable songsTable = new SongsTable(conn);
 		
 		this.syncArtist(song.getArtist());
 		
-		sync(songs, song);
+		sync(songsTable, song);
 		
-		songs.close();
+		songsTable.closeConnection();
 	}
 	
 }
