@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import music.Artist;
+import music.Event;
 import music.MusicItem;
 
 public class SimilarArtistsTable extends DatabaseTable {
@@ -63,10 +64,13 @@ public class SimilarArtistsTable extends DatabaseTable {
 			Artist a = (Artist) item;
 			int rows = 0;
 			
+			
 			for (Artist similar : a.getSimilarArtists()) {
-				stat.setString(1, a.getMBID());
-				stat.setString(2, similar.getMBID());
-				rows += stat.executeUpdate();
+				if (!this.contains(a, similar)) {
+					stat.setString(1, a.getMBID());
+					stat.setString(2, similar.getMBID());
+					rows += stat.executeUpdate();
+				}
 			}
 				
 			return rows;
@@ -78,7 +82,7 @@ public class SimilarArtistsTable extends DatabaseTable {
 
 	@Override
 	public int update(MusicItem item) throws DatabaseException {
-		PreparedStatement stat;
+		/*PreparedStatement stat;
 		try {
 			stat = updateStatement();
 
@@ -95,7 +99,8 @@ public class SimilarArtistsTable extends DatabaseTable {
 
 		} catch (SQLException e) {
 			throw new DatabaseException(e);
-		}
+		}*/
+		return 0;
 	}
 	
 	/*"artist character(37) NOT NULL," +
@@ -148,6 +153,21 @@ public class SimilarArtistsTable extends DatabaseTable {
 	public boolean contains(MusicItem item) throws DatabaseException {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	public boolean contains(Artist artist, Artist similar) throws DatabaseException {
+		try {
+			PreparedStatement prep = conn.prepareStatement(
+					"select count(*) from similarartists where artist=? AND similar=?");
+			prep.setString(1, artist.getMBID());
+			prep.setString(2, similar.getMBID());
+
+			ResultSet r = prep.executeQuery();
+			int count = r.getInt(1);
+			return (count > 0);
+		} catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
 	}
 
 }

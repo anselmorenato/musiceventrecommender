@@ -49,19 +49,21 @@ public class LastFM {
 		if(lfmartist == null)
 			return null;
 		
-		music.Artist artist;
-		try {
-			artist = new music.Artist(lfmartist.getMbid(), 
-					lfmartist.getName());
-		} catch (MusicItemException e) {
-			return null;
-		}
+		music.Artist artist = translateArtist(lfmartist);
+				
+		// Get similar artists
+		Collection<net.roarsoftware.lastfm.Artist> similar = 
+			net.roarsoftware.lastfm.Artist.getSimilar(name, apiKey);
 		
-		artist.setPlaycount(0);
+		for (net.roarsoftware.lastfm.Artist la : similar) {
+			Artist a = translateArtist(la);
+			if (a != null)
+				artist.addSimilarArtist(a);
+		}
 		
 		return artist;
 	}
-	
+		
 	/**
 	 * Lookup song by name
 	 * @param name the song name
@@ -86,6 +88,17 @@ public class LastFM {
 			return null;
 		}
 		return song;
+	}
+	
+	private music.Artist translateArtist(net.roarsoftware.lastfm.Artist l_artist) {
+		music.Artist artist;
+		try {
+			artist = new music.Artist(l_artist.getMbid(), 
+					l_artist.getName());
+		} catch (MusicItemException e) {
+			return null;
+		}
+		return artist;
 	}
 	
 	private music.Venue translateVenue(net.roarsoftware.lastfm.Venue l_venue) {

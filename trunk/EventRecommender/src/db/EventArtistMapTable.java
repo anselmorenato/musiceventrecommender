@@ -2,6 +2,7 @@ package db;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import music.Artist;
@@ -93,8 +94,22 @@ public class EventArtistMapTable extends DatabaseTable {
 
 	@Override
 	public boolean contains(MusicItem item) throws DatabaseException {
-		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	public boolean contains(Event event, Artist artist) throws DatabaseException {
+		try {
+			PreparedStatement prep = conn.prepareStatement(
+					"select count(*) from eventartistmap where artist=? AND event=?");
+			prep.setString(1, artist.getMBID());
+			prep.setInt(2, event.getID());
+
+			ResultSet r = prep.executeQuery();
+			int count = r.getInt(1);
+			return (count > 0);
+		} catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
 	}
 
 }

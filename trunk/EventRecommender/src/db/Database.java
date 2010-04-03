@@ -157,29 +157,18 @@ public class Database {
 	}
 	
 	/**
-	 * Add an event to the database
-	 * @param event - the event
-	 */
-	private void store(Event event) {
-		
-	}
-	
-
-	/**
 	 * Add a venue to the database
 	 * @param venue - the venue
+	 * @throws DatabaseException 
 	 */
-	private void store(Venue venue) {
+	private void store(Venue venue) throws DatabaseException {
+		Connection conn = connect();
 		
-	}
-	
-	/**
-	 * Link an artist with an event
-	 * @param event - The event
-	 * @param artist - The artist
-	 */
-	private void linkArtistWithEvent(Event event, Artist artist) {
+		VenuesTable venues = new VenuesTable(conn);
 		
+		sync(venues, venue);
+		
+		venues.closeConnection();
 	}
 	
 	/**
@@ -199,12 +188,33 @@ public class Database {
 		songsTable.closeConnection();
 	}
 	
-	public void addEvent(Event event, List<Artist> participatingArtists) {
+	/**
+	 * Add an event to the database
+	 * @param event - the event
+	 * @throws DatabaseException 
+	 */
+	public void addEvent(Event event) throws DatabaseException {
+		Connection conn = connect();
 		
+		EventsTable events = new EventsTable(conn);
+		
+		sync(events, event);
+		
+		EventArtistMapTable map = new EventArtistMapTable(conn);
+		
+		map.insert(event);
+		
+		events.closeConnection();
 	}
 	
-	public void addSimilarArtists(Artist artist, List<Artist> similarAritsts) {
+	public void addSimilarArtists(Artist artist) throws DatabaseException {
+		Connection conn = connect();
 		
+		SimilarArtistsTable simTable = new SimilarArtistsTable(conn);
+				
+		simTable.insert(artist);
+		
+		simTable.closeConnection();
 	}
 	
 	/**
