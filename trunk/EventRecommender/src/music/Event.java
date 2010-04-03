@@ -116,4 +116,49 @@ public class Event implements MusicItem {
 	public Venue getVenue() {
 		return venue;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((artists == null) ? 0 : artists.hashCode());
+		result = prime * result + ((date == null) ? 0 : date.hashCode());
+		result = prime * result + ((title == null) ? 0 : title.hashCode());
+		result = prime * result + ((venue == null) ? 0 : venue.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Event other = (Event) obj;
+		if (artists == null) {
+			if (other.getArtists() != null)
+				return false;
+		} else if (!artists.equals(other.getArtists()))
+			return false;
+		if (date == null) {
+			if (other.getDate() != null)
+				return false;
+		} else if (!date.equals(other.getDate()))
+			return false;
+		if (title == null) {
+			if (other.getTitle() != null)
+				return false;
+		} else if (!title.equals(other.getTitle()))
+			return false;
+		if (venue == null) {
+			if (other.getVenue() != null)
+				return false;
+		} else if (!venue.equals(other.getVenue()))
+			return false;
+		return true;
+	}
+	
+	
 }
