@@ -50,6 +50,7 @@ public class MusicImporter implements ScannerObserver, Schedulable{
 		// Sync with database
 		try {
 			db.addSong(song);
+			db.addSimilarArtists(song.getArtist());
 		} catch (DatabaseException e) {
 			System.err.println("Database Error: " + e.getMessage());
 			return;
