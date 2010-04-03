@@ -223,7 +223,7 @@ public class Database {
 	 * @return A list of at most count of the top artists
 	 * @throws DatabaseException
 	 */
-	public List<Artist> getTopArtists(int count) throws DatabaseException {
+	public LinkedList<Artist> getTopArtists(int count) throws DatabaseException {
 		if (count <= 0)
 			return new LinkedList<Artist>();
 		
@@ -239,7 +239,7 @@ public class Database {
 	 * @return A list of similar artists
 	 * @throws DatabaseException
 	 */
-	public List<Artist> getSimilarArtists(Artist theArtist) throws DatabaseException {
+	public LinkedList<Artist> getSimilarArtists(Artist theArtist) throws DatabaseException {
 		Connection conn = connect();
 		LinkedList<Artist> similar = new LinkedList<Artist>();
 		
@@ -255,6 +255,22 @@ public class Database {
 		}
 		
 		return similar;
+	}
+	
+	/**
+	 * Get a list of all artists
+	 * @return A list of all artists
+	 * @throws DatabaseException
+	 */
+	public LinkedList<Artist> getAllArtists() throws DatabaseException {
+		Connection conn = connect();
+		LinkedList<Artist> artists = new LinkedList<Artist>();
+		
+		ArtistsTable artTable = new ArtistsTable(conn);
+		
+		artists = artTable.getAllArtists();
+		
+		return artists;
 	}
 		
 }

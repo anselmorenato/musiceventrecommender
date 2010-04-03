@@ -57,8 +57,9 @@ public class MusicImporter implements ScannerObserver, Schedulable{
 		}
 	}
 
-	public void run() {
+	public boolean run() {
 		scanDirectory(this.libraryPath);
+		return true;
 	}
 
 }
