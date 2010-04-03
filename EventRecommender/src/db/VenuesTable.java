@@ -25,6 +25,7 @@ public class VenuesTable extends DatabaseTable {
 		"id integer NOT NULL," +
 		"name VARCHAR(80) NOT NULL," +
 		"city VARCHAR(80) NOT NULL," +
+		"country VARCHAR(80) NOT NULL," +
 		"street VARCHAR(128) NOT NULL," +
 		"postalcode VARCHAR(7) NOT NULL," +
 		"latitude double," +
@@ -38,8 +39,8 @@ public class VenuesTable extends DatabaseTable {
 	@Override
 	protected PreparedStatement insertStatement() throws SQLException {
 		String sql = "INSERT INTO venues " +
-				"(id, name, city, street, postalcode, latitude, longitude) " +
-				"VALUES (?, ?, ?, ?, ?, ?, ?)";
+				"(id, name, city, country, street, postalcode, latitude, longitude) " +
+				"VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 		PreparedStatement prep = conn.prepareStatement(sql);
 		return prep;
 	}
@@ -49,6 +50,7 @@ public class VenuesTable extends DatabaseTable {
 		String sql = "UPDATE venues SET " +
 				"name = ?," +
 				"city= ?," +
+				"country= ?," +
 				"street = ?," +
 				"postalcode = ?," +
 				"latitude = ?," +
@@ -68,10 +70,11 @@ public class VenuesTable extends DatabaseTable {
 			stat.setInt(1, v.getID());
 			stat.setString(2, v.getName());
 			stat.setString(3, v.getCity());
-			stat.setString(4, v.getStreet());
-			stat.setString(5, v.getPostalcode());
-			stat.setDouble(6, v.getLatitude());
-			stat.setDouble(7, v.getLongitude());
+			stat.setString(4, v.getCountry());
+			stat.setString(5, v.getStreet());
+			stat.setString(6, v.getPostalcode());
+			stat.setDouble(7, v.getLatitude());
+			stat.setDouble(8, v.getLongitude());
 			
             int rows = stat.executeUpdate();
             return rows;
@@ -89,11 +92,12 @@ public class VenuesTable extends DatabaseTable {
 			Venue v = (Venue) item;
 			stat.setString(1, v.getName());
 			stat.setString(2, v.getCity());
-			stat.setString(3, v.getStreet());
-			stat.setString(4, v.getPostalcode());
-			stat.setDouble(5, v.getLatitude());
-			stat.setDouble(6, v.getLongitude());
-			stat.setInt(7, v.getID());
+			stat.setString(3, v.getCountry());
+			stat.setString(4, v.getStreet());
+			stat.setString(5, v.getPostalcode());
+			stat.setDouble(6, v.getLatitude());
+			stat.setDouble(7, v.getLongitude());
+			stat.setInt(8, v.getID());
 			
             int rows = stat.executeUpdate();
             return rows;

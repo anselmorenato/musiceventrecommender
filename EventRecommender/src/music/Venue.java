@@ -5,6 +5,7 @@ public class Venue implements MusicItem {
 	private String name;
 	private String city;
 	private String street;
+	private String country;
 	private String postalcode;
 	private double latitude;
 	private double longitude;
@@ -42,6 +43,18 @@ public class Venue implements MusicItem {
 	 */
 	public String getCity() {
 		return city;
+	}
+	/**
+	 * @param country - the country to set
+	 */
+	public void setCountry(String country) {
+		this.country = country;
+	}
+	/**
+	 * @return the country
+	 */
+	public String getCountry() {
+		return country;
 	}
 	/**
 	 * @param street the street to set
@@ -91,4 +104,66 @@ public class Venue implements MusicItem {
 	public double getLongitude() {
 		return longitude;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((city == null) ? 0 : city.hashCode());
+		result = prime * result + ((country == null) ? 0 : country.hashCode());
+		long temp;
+		temp = Double.doubleToLongBits(latitude);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(longitude);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result
+				+ ((postalcode == null) ? 0 : postalcode.hashCode());
+		result = prime * result + ((street == null) ? 0 : street.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Venue other = (Venue) obj;
+		if (city == null) {
+			if (other.getCity() != null)
+				return false;
+		} else if (!city.equals(other.getCity()))
+			return false;
+		if (country == null) {
+			if (other.getCountry() != null)
+				return false;
+		} else if (!country.equals(other.getCountry()))
+			return false;
+		if (Double.doubleToLongBits(latitude) != Double
+				.doubleToLongBits(other.getLatitude()))
+			return false;
+		if (Double.doubleToLongBits(longitude) != Double
+				.doubleToLongBits(other.getLongitude()))
+			return false;
+		if (name == null) {
+			if (other.getName() != null)
+				return false;
+		} else if (!name.equals(other.getName()))
+			return false;
+		if (postalcode == null) {
+			if (other.getPostalcode() != null)
+				return false;
+		} else if (!postalcode.equals(other.getPostalcode()))
+			return false;
+		if (street == null) {
+			if (other.getStreet() != null)
+				return false;
+		} else if (!street.equals(other.getStreet()))
+			return false;
+		return true;
+	}
+	
 }
