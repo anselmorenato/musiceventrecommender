@@ -1,5 +1,7 @@
 package scanners;
 
+import java.util.Random;
+
 import music.Artist;
 import music.Song;
 
@@ -43,7 +45,12 @@ public class MusicImporter implements ScannerObserver, Schedulable{
 		if (song == null)
 			return;
 		
-		song.setPlaycount(playcount);
+		/* TODO: Use real playcount here */
+		//song.setPlaycount(playcount);
+		Random rand = new Random();
+		int max = 200;
+		int randPlaycount = rand.nextInt(max);
+		song.setPlaycount(randPlaycount);
 		
 		artist.incrementPlaycount(playcount);
 		
