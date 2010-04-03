@@ -1,5 +1,5 @@
 package schedulers;
 
 public interface Schedulable {
-	public void run();
+	public boolean run();
 }

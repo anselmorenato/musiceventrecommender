@@ -166,7 +166,7 @@ public class ArtistsTable extends DatabaseTable{
 	 * @param limit the maximum number of artists to return
 	 * @return A list of most played artists
 	 */
-	public List<Artist> getMostPlayedArtists(int limit) throws DatabaseException {
+	public LinkedList<Artist> getMostPlayedArtists(int limit) throws DatabaseException {
 		String sql = "SELECT * FROM Artists " +
 				"ORDER BY playcount " +
 				"LIMIT " + limit;
@@ -198,6 +198,43 @@ public class ArtistsTable extends DatabaseTable{
 		}
 		
 		return top;
+	}
+	
+	/** 
+	 * Get all artists in the database
+	 * @return A list of all artists
+	 */
+	public LinkedList<Artist> getAllArtists() throws DatabaseException {
+		String sql = "SELECT * FROM Artists " +
+				"ORDER BY name ";
+		
+		ResultSet rs;
+		LinkedList<Artist> all = new LinkedList<Artist>();
+		
+		try {
+			Statement select = conn.createStatement();
+			rs = select.executeQuery(sql);
+		} catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
+		
+		try {
+			while(rs.next()) {
+				Artist a = makeArtist(rs);
+				if (a != null)
+					all.add(a);
+			}
+		} catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
+		
+		try {
+			rs.close();
+		} catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
+		
+		return all;
 	}
 	
 	@Override

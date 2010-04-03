@@ -4,9 +4,9 @@ import schedulers.Schedulable;
 
 public class EmailNotifier implements Schedulable{
 
-	public void run() {
+	public boolean run() {
 		// TODO Auto-generated method stub
-		
+		return true;
 	}
 
 	
