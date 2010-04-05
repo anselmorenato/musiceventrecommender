@@ -68,7 +68,7 @@ public class DirectoryScanner implements Scanner{
 	
 	public static void main(String[] args) {
 		String home = "/Users/derek/Music";
-		
+		//String home = "D:/Music/";
 		
 		
 		DirectoryScanner ds = new DirectoryScanner(home);
