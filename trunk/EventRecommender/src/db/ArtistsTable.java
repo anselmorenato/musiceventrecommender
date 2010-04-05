@@ -105,7 +105,7 @@ public class ArtistsTable extends DatabaseTable{
 	 * @return - The artist
 	 * @throws SQLException 
 	 */
-	private Artist makeArtist(ResultSet rs) throws SQLException {
+	public Artist makeArtist(ResultSet rs) throws SQLException {
 		String mbid = rs.getString("mbid");
 		String name = rs.getString("name");
 		int playcount = rs.getInt("playcount");

@@ -57,6 +57,12 @@ public class DirectoryScanner implements Scanner{
 		File[] dirs = dir.listFiles(dirFilter);
 		File[] contents = dir.listFiles(musicFilter);
 		
+		if(contents == null)
+		{
+			System.err.println("No music files!");
+			return;
+		}
+		
 		for (File f : contents) {
 			if (f != null)
 				scanSong(f);
@@ -67,7 +73,7 @@ public class DirectoryScanner implements Scanner{
 	}
 	
 	public static void main(String[] args) {
-		String home = "D:/music";
+		String home = "music";
 		
 		
 		

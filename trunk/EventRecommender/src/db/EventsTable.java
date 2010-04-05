@@ -2,10 +2,17 @@ package db;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Date;
+import java.util.LinkedList;
 
+import music.Artist;
 import music.Event;
 import music.MusicItem;
+import music.MusicItemException;
+import music.Venue;
 
 public class EventsTable extends DatabaseTable {
 
@@ -84,6 +91,99 @@ public class EventsTable extends DatabaseTable {
 		} catch (SQLException e) {
 			throw new DatabaseException(e);
 		}
+	}
+	
+	private Event makeEvent(ResultSet rs) throws SQLException {
+		int id = rs.getInt("id");
+		String name = rs.getString("title");
+		int venue = rs.getInt("venue");
+		String date = rs.getString("date");
+		String text = rs.getString("description");
+		String website = rs.getString("website");
+		String ticketsite = rs.getString("ticketsite");
+		
+		Event ev = new Event(id);
+		try 
+		{
+			VenuesTable ve = new VenuesTable(conn);		
+			Venue v = ve.getVenue(id);
+			ev.setVenue(v);
+		}
+		catch (DatabaseException e) {
+			return null;
+		}
+		ev.setTitle(name);
+		ev.setDate(date);
+		ev.setDescription(text);
+		ev.setTicketsite(ticketsite);
+		ev.setWebsite(website);
+		
+		return ev;
+	}
+	
+	public LinkedList<Event> getAllEvents() throws DatabaseException {
+		String sql = "SELECT * FROM events " +
+				"ORDER BY date ";
+		
+		ResultSet rs;
+		LinkedList<Event> all = new LinkedList<Event>();
+		
+		try {
+			Statement select = conn.createStatement();
+			rs = select.executeQuery(sql);
+		} catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
+		
+		try {
+			while(rs.next()) {
+				Event ev = makeEvent(rs);
+				if (ev != null)
+					all.add(ev);
+			}
+		} catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
+		
+		try {
+			rs.close();
+		} catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
+		
+		return all;
+	}
+	
+	public Event getEvent(int id) throws DatabaseException {
+		String sql = "SELECT * FROM artists " +
+				"WHERE id = " + id;
+		
+		ResultSet rs;
+		
+		
+		try {
+			Statement select = conn.createStatement();
+			rs = select.executeQuery(sql);
+		} catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
+		
+		Event a = null;
+		try {
+			while(rs.next()) {
+				a = makeEvent(rs);
+			}
+		} catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
+		
+		try {
+			rs.close();
+		} catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
+		
+		return a;
 	}
 
 

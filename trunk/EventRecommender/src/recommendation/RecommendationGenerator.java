@@ -21,21 +21,21 @@ public class RecommendationGenerator implements Schedulable{
 	private LastFM lastfm;
 
 	private Database db;
-	private boolean rank;
-	private boolean only;
+	private int rank;
+	private boolean all;
 
 	/**
 	 * Constructor
 	 * @param data - database where the lists of artists are stored
 	 * @param location - where the events should be.
-	 * @param only - boolean that tell us if  the user wants only the top 10 and similar artists.
+	 * @param all - boolean that tell us if  the user wants only the top 10 and similar artists.
 	 * @param rank - boolean that tell us if it useful to check for the top 10 artists.
 	 */
-	public RecommendationGenerator(Database data,Location location,boolean only, boolean rank)
+	public RecommendationGenerator(Database data,Location location,boolean all,int rank)
 	{
 		db = data;
 		this.rank = rank;
-		this.only = only;
+		this.all = all;
 		similarArtists = new LinkedList<Artist>();
 		recommendations = new LinkedList<Event>();
 		local = location;
@@ -49,7 +49,7 @@ public class RecommendationGenerator implements Schedulable{
 		 * - get events matching artists (from last.fm directly. It think separating the 'event querier' was a mistake)
 		 * - store recommended events in db (possibly separate recommended events table)
 		 */
-		if(!only)
+		if(all)
 		{
 			try
 			{
@@ -61,12 +61,12 @@ public class RecommendationGenerator implements Schedulable{
 			if(allArtists.size() <= 0) return false;
 		}
 
-		if(rank)
+		if(rank > 0)
 		{
 			//Get the top 10 artists
 			try
 			{
-				topArtists = db.getTopArtists(10);
+				topArtists = db.getTopArtists(rank);
 			}
 			catch (DatabaseException e) {
 				topArtists = new LinkedList<Artist>();
@@ -96,11 +96,11 @@ public class RecommendationGenerator implements Schedulable{
 					{
 						similarArtists.remove(art);
 					}
-					if(!only)allArtists.remove(art);
+					if(all)allArtists.remove(art);
 				}
 				for(Artist arty: similarArtists)
 				{
-					if(!only && allArtists.contains(arty)) 
+					if(all && allArtists.contains(arty)) 
 						allArtists.remove(arty);	
 				}
 				//Get a list of events
@@ -132,7 +132,7 @@ public class RecommendationGenerator implements Schedulable{
 				}
 			}
 		}
-		if(!only){
+		if(all){
 			// get the events of the remaining artists.
 			for(Artist anArtist: allArtists)
 			{

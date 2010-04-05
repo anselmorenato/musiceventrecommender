@@ -3,7 +3,9 @@ package db;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -271,6 +273,51 @@ public class Database {
 		artists = artTable.getAllArtists();
 		
 		return artists;
+	}
+	
+	public LinkedList<Event> getAllEvents() throws DatabaseException {
+		Connection conn = connect();
+		
+		LinkedList<Event> event = new LinkedList<Event>();
+		
+		EventsTable evtab = new EventsTable(conn);
+		ArtistsTable artTable = new ArtistsTable(conn);
+		
+		event = evtab.getAllEvents();
+		
+		for(Event ev: event)
+		{
+			String sql = "SELECT * FROM artists " +
+			"WHERE mbid IN " +
+			"SELECT artist FROM eventartistmap" +
+			"WHERE event = " + ev.getID();
+
+			ResultSet rs;
+
+			try {
+				Statement select = conn.createStatement();
+				rs = select.executeQuery(sql);
+			} catch (SQLException e) {
+				throw new DatabaseException(e);
+			}
+
+			try {
+				while(rs.next()) {
+					Artist a = artTable.makeArtist(rs);
+					ev.addArtist(a);
+				}
+			} catch (SQLException e) {
+				throw new DatabaseException(e);
+			}
+			
+			try {
+				rs.close();
+			} catch (SQLException e) {
+				throw new DatabaseException(e);
+			}
+		}
+		
+		return event;
 	}
 		
 }

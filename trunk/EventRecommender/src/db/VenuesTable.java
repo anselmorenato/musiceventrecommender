@@ -4,7 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
+import music.Event;
 import music.MusicItem;
 import music.Venue;
 
@@ -120,5 +122,58 @@ public class VenuesTable extends DatabaseTable {
 		} catch (SQLException e) {
 			throw new DatabaseException(e);
 		}
+	}
+	
+	private Venue makeVenue(ResultSet rs) throws SQLException {
+		int id = rs.getInt("id");
+		String name = rs.getString("name");
+		String city = rs.getString("city");
+		String country = rs.getString("country");
+		String street = rs.getString("street");
+		String postal = rs.getString("postalcode");
+		double lat = rs.getDouble("latitude");
+		double lon = rs.getDouble("longitude");
+		
+		Venue v = new Venue(id);
+		v.setCity(city);
+		v.setCountry(country);
+		v.setName(name);
+		v.setStreet(street);
+		v.setPostalcode(postal);
+		v.setLatitude(lat);
+		v.setLongitude(lon);
+		
+		return v;
+	}
+	
+	public Venue getVenue(int id)throws DatabaseException {
+		String sql = "SELECT * FROM venues " +
+		"WHERE id = " + id;
+
+		ResultSet rs;
+		
+		try {
+			Statement select = conn.createStatement();
+			rs = select.executeQuery(sql);
+		} catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
+			
+		Venue v = null;
+		try {
+			while(rs.next()) {
+				v = makeVenue(rs);
+			}
+		} catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
+		
+		try {
+			rs.close();
+		} catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
+		
+		return v;
 	}
 }
