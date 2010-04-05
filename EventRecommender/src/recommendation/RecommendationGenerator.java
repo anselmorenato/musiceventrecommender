@@ -21,21 +21,17 @@ public class RecommendationGenerator implements Schedulable{
 	private LastFM lastfm;
 
 	private Database db;
-	private int rank;
-	private boolean all;
+	private boolean rank;
 
 	/**
 	 * Constructor
 	 * @param data - database where the lists of artists are stored
-	 * @param location - where the events should be.
-	 * @param all - boolean that tell us if  the user wants only the top 10 and similar artists.
 	 * @param rank - boolean that tell us if it useful to check for the top 10 artists.
 	 */
-	public RecommendationGenerator(Database data,Location location,boolean all,int rank)
+	public RecommendationGenerator(Database data,Location location, boolean rank)
 	{
 		db = data;
 		this.rank = rank;
-		this.all = all;
 		similarArtists = new LinkedList<Artist>();
 		recommendations = new LinkedList<Event>();
 		local = location;
@@ -49,24 +45,21 @@ public class RecommendationGenerator implements Schedulable{
 		 * - get events matching artists (from last.fm directly. It think separating the 'event querier' was a mistake)
 		 * - store recommended events in db (possibly separate recommended events table)
 		 */
-		if(all)
+		try
 		{
-			try
-			{
-				allArtists = db.getAllArtists();
-			}
-			catch (DatabaseException e) {
-				return false;
-			}
-			if(allArtists.size() <= 0) return false;
+			allArtists = db.getAllArtists();
 		}
+		catch (DatabaseException e) {
+			return false;
+		}
+		if(allArtists.size() <= 0) return false;
 
-		if(rank > 0)
+		if(rank)
 		{
 			//Get the top 10 artists
 			try
 			{
-				topArtists = db.getTopArtists(rank);
+				topArtists = db.getTopArtists(10);
 			}
 			catch (DatabaseException e) {
 				topArtists = new LinkedList<Artist>();
@@ -96,11 +89,11 @@ public class RecommendationGenerator implements Schedulable{
 					{
 						similarArtists.remove(art);
 					}
-					if(all)allArtists.remove(art);
+					allArtists.remove(art);
 				}
 				for(Artist arty: similarArtists)
 				{
-					if(all && allArtists.contains(arty)) 
+					if(allArtists.contains(arty)) 
 						allArtists.remove(arty);	
 				}
 				//Get a list of events
@@ -132,33 +125,21 @@ public class RecommendationGenerator implements Schedulable{
 				}
 			}
 		}
-		if(all){
-			// get the events of the remaining artists.
-			for(Artist anArtist: allArtists)
+		// get the events of the remaining artists.
+		for(Artist anArtist: allArtists)
+		{
+			LinkedList<Event> artEvent= lastfm.getArtistEvents(anArtist);
+			for(Event e: artEvent)
 			{
-				LinkedList<Event> artEvent= lastfm.getArtistEvents(anArtist);
-				for(Event e: artEvent)
+				if(!recommendations.contains(e))
 				{
-					if(!recommendations.contains(e))
-					{
-						if(local.compareByCity(e.getVenue().getCity())
-								&& local.compareByCountry(e.getVenue().getCountry()))
-							recommendations.add(e);
-					}
+					if(local.compareByCity(e.getVenue().getCity())
+							&& local.compareByCountry(e.getVenue().getCountry()))
+						recommendations.add(e);
 				}
 			}
 		}
-
-		//Putting the recommendations in the database
-		for(Event ev: recommendations)
-		{
-			try{
-				db.addEvent(ev);
-			}
-			catch (DatabaseException e) {
-				//do nothing
-			}
-		}
+		
 		return true;
 	}
 
