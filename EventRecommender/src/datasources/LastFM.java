@@ -50,6 +50,8 @@ public class LastFM {
 			return null;
 
 		music.Artist artist = translateArtist(lfmartist);
+		if(artist == null)
+			return null;
 
 		// Get similar artists
 		Collection<net.roarsoftware.lastfm.Artist> similar = 

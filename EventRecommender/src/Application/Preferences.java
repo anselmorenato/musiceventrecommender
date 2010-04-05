@@ -86,12 +86,12 @@ public class Preferences {
 		this.scanAll = "true";
 		this.scanFile = "1";
 		this.scanRec = "0";
-		this.ds1 = "4";
-		this.ds2 = "2";
-		this.ds3 = "2009";
-		this.dr1 = "4";
-		this.dr2 = "2";
-		this.dr3 = "2009";
+		this.ds1 = "-8";
+		this.ds2 = "-1";
+		this.ds3 = "0";
+		this.dr1 = "-8";
+		this.dr2 = "-1";
+		this.dr3 = "0";
 	}
 	
 	private void setDefaultProperties() {
@@ -105,12 +105,12 @@ public class Preferences {
 		configProperties.setProperty(allKey, defaultScanAll);
 		configProperties.setProperty(filKey, defaultScanFile);
 		configProperties.setProperty(recKey, defaultScanRec);
-		configProperties.setProperty(ds1Key,"4");
-		configProperties.setProperty(ds2Key,"2");
-		configProperties.setProperty(ds3Key,"2009");
-		configProperties.setProperty(dr1Key,"4");
-		configProperties.setProperty(dr2Key,"2");
-		configProperties.setProperty(dr3Key,"2009");
+		configProperties.setProperty(ds1Key,"-8");
+		configProperties.setProperty(ds2Key,"-1");
+		configProperties.setProperty(ds3Key,"0");
+		configProperties.setProperty(dr1Key,"-8");
+		configProperties.setProperty(dr2Key,"-1");
+		configProperties.setProperty(dr3Key,"0");
 	}
 	
 	public boolean readPreferences() {
