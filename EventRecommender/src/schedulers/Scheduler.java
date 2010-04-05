@@ -89,7 +89,7 @@ public class Scheduler {
 	public static void main(String[] args)
 	{
 		Scheduler sch = new Scheduler();
-		Schedulable directory = new MusicImporter(sch.getDb(),"D:/Music/",sch.getLibPath());
+		Schedulable directory = new MusicImporter(sch.getDb(),sch.getDirPath(),sch.getLibPath());
 		
 		Location local;
 		switch(sch.getLocation()){
