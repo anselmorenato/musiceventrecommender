@@ -45,54 +45,12 @@ public class Scheduler {
 		}
 	}
 	
-	public Preferences getPreferences()
+	public void run()
 	{
-		return config;
-	}
-	
-	public String getDatPath() {
-		return datPath;
-	}
-
-	public String getDirPath() {
-		return dirPath;
-	}
-
-	public String getLibPath() {
-		return libPath;
-	}
-
-	public int getTop() {
-		return top;
-	}
-	
-	public int getLocation() {
-		return location;
-	}
-
-	public boolean isEvery() {
-		return every;
-	}
-
-	public int getFilesys() {
-		return filesys;
-	}
-
-	public int getRec() {
-		return rec;
-	}
-
-	public Database getDb() {
-		return db;
-	}
-
-	public static void main(String[] args)
-	{
-		Scheduler sch = new Scheduler();
-		Schedulable directory = new MusicImporter(sch.getDb(),sch.getDirPath(),sch.getLibPath());
+		Schedulable directory = new MusicImporter(db,dirPath,libPath);
 		
 		Location local;
-		switch(sch.getLocation()){
+		switch(location){
 		case 1:
 			local = new Location("Quebec","Canada");
 			break;
@@ -107,90 +65,96 @@ public class Scheduler {
 			break;
 		}
 		
-		Schedulable recommend = new RecommendationGenerator(sch.getDb(),local,sch.isEvery(),sch.getTop());
+		Schedulable recommend = new RecommendationGenerator(db,local,every,top);
 		
 		//Scan directory
 		Calendar now = Calendar.getInstance();
-		Preferences pf = sch.getPreferences();
-		switch(sch.getFilesys()){
+		switch(filesys){
 		case 1:
-			if(now.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY)
+			if(Math.abs(now.get(Calendar.DAY_OF_MONTH)- config.getDayScan()) > 7)
 			{
 				directory.run();
-				pf.setDayScan(now.get(Calendar.DAY_OF_MONTH)+"");
-				pf.setMonthScan(now.get(Calendar.MONTH)+"");
-				pf.setYearScan(now.get(Calendar.YEAR)+"");
+				config.setDayScan(now.get(Calendar.DAY_OF_MONTH)+"");
+				config.setMonthScan(now.get(Calendar.MONTH)+"");
+				config.setYearScan(now.get(Calendar.YEAR)+"");
 			}
 			break;
 		case 2:
-			if(now.get(Calendar.MONTH) != pf.getMonthScan())
+			if(now.get(Calendar.MONTH) != config.getMonthScan())
 			{
 				directory.run();
-				pf.setDayScan(now.get(Calendar.DAY_OF_MONTH)+"");
-				pf.setMonthScan(now.get(Calendar.MONTH)+"");
-				pf.setYearScan(now.get(Calendar.YEAR)+"");
+				config.setDayScan(now.get(Calendar.DAY_OF_MONTH)+"");
+				config.setMonthScan(now.get(Calendar.MONTH)+"");
+				config.setYearScan(now.get(Calendar.YEAR)+"");
 			}
 			break;
 		case 3:
-			if(now.get(Calendar.YEAR) != pf.getYearScan())
+			if(now.get(Calendar.YEAR) != config.getYearScan())
 			{
 				directory.run();
-				pf.setDayScan(now.get(Calendar.DAY_OF_MONTH)+"");
-				pf.setMonthScan(now.get(Calendar.MONTH)+"");
-				pf.setYearScan(now.get(Calendar.YEAR)+"");
+				config.setDayScan(now.get(Calendar.DAY_OF_MONTH)+"");
+				config.setMonthScan(now.get(Calendar.MONTH)+"");
+				config.setYearScan(now.get(Calendar.YEAR)+"");
 			}
 			break;
 		default:
-			if(now.get(Calendar.DAY_OF_MONTH) != pf.getDayScan())
+			if(now.get(Calendar.DAY_OF_MONTH) != config.getDayScan())
 			{
 				directory.run();
-				pf.setDayScan(now.get(Calendar.DAY_OF_MONTH)+"");
-				pf.setMonthScan(now.get(Calendar.MONTH)+"");
-				pf.setYearScan(now.get(Calendar.YEAR)+"");
+				config.setDayScan(now.get(Calendar.DAY_OF_MONTH)+"");
+				config.setMonthScan(now.get(Calendar.MONTH)+"");
+				config.setYearScan(now.get(Calendar.YEAR)+"");
 			}
 			break;
 		}
 		
 		// Recommendations
-		switch(sch.getRec()){
+		switch(rec){
 		case 1:
-			if(now.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY)
+			if(Math.abs(now.get(Calendar.DAY_OF_MONTH)- config.getDayScan()) > 7)
 			{
 				recommend.run();
-				pf.setDayRec(now.get(Calendar.DAY_OF_MONTH)+"");
-				pf.setMonthRec(now.get(Calendar.MONTH)+"");
-				pf.setYearRec(now.get(Calendar.YEAR)+"");
+				config.setDayRec(now.get(Calendar.DAY_OF_MONTH)+"");
+				config.setMonthRec(now.get(Calendar.MONTH)+"");
+				config.setYearRec(now.get(Calendar.YEAR)+"");
 			}
 			break;
 		case 2:
-			if(now.get(Calendar.MONTH) != pf.getMonthRec())
+			if(now.get(Calendar.MONTH) != config.getMonthRec())
 			{
 				recommend.run();
-				pf.setDayRec(now.get(Calendar.DAY_OF_MONTH)+"");
-				pf.setMonthRec(now.get(Calendar.MONTH)+"");
-				pf.setYearRec(now.get(Calendar.YEAR)+"");
+				config.setDayRec(now.get(Calendar.DAY_OF_MONTH)+"");
+				config.setMonthRec(now.get(Calendar.MONTH)+"");
+				config.setYearRec(now.get(Calendar.YEAR)+"");
 			}
 			break;
 		case 3:
-			if(now.get(Calendar.YEAR) != pf.getYearRec())
+			if(now.get(Calendar.YEAR) != config.getYearRec())
 			{
 				recommend.run();
-				pf.setDayRec(now.get(Calendar.DAY_OF_MONTH)+"");
-				pf.setMonthRec(now.get(Calendar.MONTH)+"");
-				pf.setYearRec(now.get(Calendar.YEAR)+"");
+				config.setDayRec(now.get(Calendar.DAY_OF_MONTH)+"");
+				config.setMonthRec(now.get(Calendar.MONTH)+"");
+				config.setYearRec(now.get(Calendar.YEAR)+"");
 			}
 			break;
 		default:
-			if(now.get(Calendar.DAY_OF_MONTH) != pf.getDayRec())
+			if(now.get(Calendar.DAY_OF_MONTH) != config.getDayRec())
 			{
 				recommend.run();
-				pf.setDayRec(now.get(Calendar.DAY_OF_MONTH)+"");
-				pf.setMonthRec(now.get(Calendar.MONTH)+"");
-				pf.setYearRec(now.get(Calendar.YEAR)+"");
+				config.setDayRec(now.get(Calendar.DAY_OF_MONTH)+"");
+				config.setMonthRec(now.get(Calendar.MONTH)+"");
+				config.setYearRec(now.get(Calendar.YEAR)+"");
 			}
 			break;
 		}
 
-		pf.writePreferences();
+		config.writePreferences();
+	}
+
+	public static void main(String[] args)
+	{
+		Scheduler sch = new Scheduler();
+		sch.run();
+		System.out.println("Done!");
 	}
 }
