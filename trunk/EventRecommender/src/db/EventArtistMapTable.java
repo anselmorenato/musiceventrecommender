@@ -65,6 +65,9 @@ public class EventArtistMapTable extends DatabaseTable {
 				if (a.getMBID() == null)
 					continue;
 				
+				if (contains(e, a))
+					continue;
+				
 				stat.setInt(1, e.getID());
 				stat.setString(2, a.getMBID());
 				rows += stat.executeUpdate();
@@ -86,6 +89,9 @@ public class EventArtistMapTable extends DatabaseTable {
 
 			for (Artist a : e.getArtists()) {
 				if (a.getMBID() == null)
+					continue;
+				
+				if (contains(e, a))
 					continue;
 				
 				stat.setInt(1, e.getID());
