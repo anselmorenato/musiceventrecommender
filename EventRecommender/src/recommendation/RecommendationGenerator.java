@@ -63,7 +63,7 @@ public class RecommendationGenerator implements Schedulable{
 				topArtists = new LinkedList<Artist>();
 			}
 			if(topArtists.size() > 0)
-			{/*
+			{
 				// Get all similar artists for the top 10 artists
 				LinkedList<Artist> tmp;
 				
@@ -94,7 +94,7 @@ public class RecommendationGenerator implements Schedulable{
 				{
 					if(all && allArtists.contains(arty)) 
 						allArtists.remove(arty);	
-				}*/
+				}
 				//Get a list of events
 				for(Artist art: topArtists)
 				{
@@ -113,18 +113,25 @@ public class RecommendationGenerator implements Schedulable{
 						}
 					}
 				}
-				/*
+				
 				for(Artist arty: similarArtists)
 				{
 					LinkedList<Event> artEvent= lastfm.getArtistEvents(arty);
 					for(Event e: artEvent)
 					{
-							if(local.compareByCity(e.getVenue().getCity())
-									&& local.compareByCountry(e.getVenue().getCountry()))
-								recommendations.add(e);
+						if(!recommendations.contains(e)){
+							recommendations.add(e);
+							int i = recommendations.indexOf(e);
+							recommendations.get(i).addArtist(arty);
+						}
+						else
+						{
+							int i = recommendations.indexOf(e);
+							recommendations.get(i).addArtist(arty);
+						}
 					}
 				}
-				*/
+				
 			}
 		}
 		// get the events of the remaining artists.
