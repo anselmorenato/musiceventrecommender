@@ -6,6 +6,8 @@ import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import Application.Preferences;
 
@@ -14,6 +16,14 @@ import db.DatabaseException;
 
 public class Start extends JFrame{
 
+	private static void setLookAndFeel() {
+		try {
+			UIManager.setLookAndFeel(
+			        UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception e) {}
+		
+	}
+	
 	public static void main(String args[]) {
 		ListPanel ls;
 		Preferences config = new Preferences("config.txt");
@@ -30,6 +40,8 @@ public class Start extends JFrame{
 			return;
 		}
 
+		setLookAndFeel();
+		
 		OptionPanel op = new OptionPanel();
 		JFrame frame = new JFrame();
 		frame.setTitle("Music Event Recommender");
