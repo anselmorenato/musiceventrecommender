@@ -1,7 +1,8 @@
 package schedulers;
 
 import java.util.Calendar;
-import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import music.Location;
 import recommendation.RecommendationGenerator;
@@ -11,7 +12,7 @@ import db.DatabaseException;
 import Application.Preferences;
 
 
-public class Scheduler {
+public class Scheduler extends TimerTask{
 	
 	private String datPath;
 	private String dirPath;
@@ -150,11 +151,16 @@ public class Scheduler {
 
 		config.writePreferences();
 	}
-
+	
 	public static void main(String[] args)
 	{
-		Scheduler sch = new Scheduler();
-		sch.run();
-		System.out.println("Done!");
+		Timer timer = new Timer();
+		Calendar date = Calendar.getInstance();
+
+		timer.schedule(
+				new Scheduler(),
+				date.getTime(),
+				1000 * 60 * 60 * 24 * 1
+		);
 	}
 }

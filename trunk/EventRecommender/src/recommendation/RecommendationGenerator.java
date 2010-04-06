@@ -63,9 +63,10 @@ public class RecommendationGenerator implements Schedulable{
 				topArtists = new LinkedList<Artist>();
 			}
 			if(topArtists.size() > 0)
-			{
+			{/*
 				// Get all similar artists for the top 10 artists
 				LinkedList<Artist> tmp;
+				
 				for(Artist art: topArtists)
 				{
 					try
@@ -88,12 +89,12 @@ public class RecommendationGenerator implements Schedulable{
 						similarArtists.remove(art);
 					}
 					if(all)allArtists.remove(art);
-				}
+				}	
 				for(Artist arty: similarArtists)
 				{
 					if(all && allArtists.contains(arty)) 
 						allArtists.remove(arty);	
-				}
+				}*/
 				//Get a list of events
 				for(Artist art: topArtists)
 				{
@@ -102,12 +103,13 @@ public class RecommendationGenerator implements Schedulable{
 					{
 						if(!recommendations.contains(e))
 						{
-							if(local.compareByCity(e.getVenue().getCity())
-									&& local.compareByCountry(e.getVenue().getCountry()))
+							//if(local.compareByCity(e.getVenue().getCity())
+							//		&& local.compareByCountry(e.getVenue().getCountry()))
 								recommendations.add(e);
 						}
 					}
 				}
+				/*
 				for(Artist arty: similarArtists)
 				{
 					LinkedList<Event> artEvent= lastfm.getArtistEvents(arty);
@@ -121,10 +123,13 @@ public class RecommendationGenerator implements Schedulable{
 						}
 					}
 				}
+				*/
 			}
 		}
 		// get the events of the remaining artists.
-		if(all){
+		if(all)
+		{
+			System.out.println("oh");
 			for(Artist anArtist: allArtists)
 			{
 				LinkedList<Event> artEvent= lastfm.getArtistEvents(anArtist);
@@ -132,9 +137,9 @@ public class RecommendationGenerator implements Schedulable{
 				{
 					if(!recommendations.contains(e))
 					{
-						if(local.compareByCity(e.getVenue().getCity())
-								&& local.compareByCountry(e.getVenue().getCountry()))
-							recommendations.add(e);
+						//if(local.compareByCity(e.getVenue().getCity())
+						//		&& local.compareByCountry(e.getVenue().getCountry()))
+						recommendations.add(e);
 					}
 				}
 			}
@@ -148,6 +153,21 @@ public class RecommendationGenerator implements Schedulable{
 			}
 		}
 		return true;
+	}
+	
+	public static void main(String [] args)
+	{
+		Database db;
+		try {
+			db = new Database("musiceventdata.db");
+		} catch (DatabaseException e) {
+			e.printStackTrace();
+			return;
+		}
+		Location loc = new Location("Montreal","Canada");
+		RecommendationGenerator rg = new RecommendationGenerator(db,loc,true,5);
+		rg.run();
+		System.out.println("Done!");
 	}
 
 }
