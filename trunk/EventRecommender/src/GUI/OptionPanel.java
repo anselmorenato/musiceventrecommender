@@ -16,6 +16,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerModel;
@@ -28,9 +29,12 @@ public class OptionPanel extends JPanel{
 	private JTextField path0;
 	private JTextField path1;
 	private JTextField path2;
+	private JTextField usernameField;
+	private JTextField passwordField;
 	private JSpinner spin;
 	private JComboBox loc;
 	private JCheckBox all;
+	private JCheckBox emailNotificationEnabled;
 	private JComboBox choice;
 	private JComboBox choice2;
 	private JButton save;
@@ -46,6 +50,9 @@ public class OptionPanel extends JPanel{
 	private boolean every;
 	private int filesys;
 	private int rec;
+	private boolean emailEnabled;
+	private String emailUsername;
+	private String emailPassword;
 	
 	private String dir = "config.txt";
 	private Preferences config;
@@ -62,6 +69,10 @@ public class OptionPanel extends JPanel{
 		every = config.getAllEvents();
 		filesys = config.getScanFile();
 		rec = config.getScanRec();
+		emailEnabled = config.getEmailEnabled();
+		emailUsername = config.getEmailUser();
+		emailPassword = config.getEmailPassword();
+		
 		
 		mpanel = new JPanel();
 		mpanel.setLayout(new BoxLayout(mpanel,BoxLayout.Y_AXIS));
@@ -124,6 +135,31 @@ public class OptionPanel extends JPanel{
 		p4.add(p41);
 		p4.add(p42);
 		
+		JPanel notification = new JPanel();
+		notification.setLayout(new BoxLayout(notification,BoxLayout.Y_AXIS));
+		notification.setBorder(BorderFactory.createTitledBorder("Email Notification"));
+		JPanel notif_check = new JPanel();
+		emailNotificationEnabled = new JCheckBox();
+		emailNotificationEnabled.setSelected(emailEnabled);
+		notif_check.add(new JLabel("Enable Email notification: "));
+		notif_check.add(emailNotificationEnabled);
+		usernameField = new JTextField(this.emailUsername,10);
+		passwordField = new JPasswordField(this.emailPassword, 10);
+		notification.add(notif_check);
+		
+		JPanel userPanel = new JPanel();
+		userPanel.setLayout(new BoxLayout(userPanel,BoxLayout.Y_AXIS));
+		userPanel.add(new JLabel("GMail Address:"));
+		userPanel.add(usernameField);
+		
+		JPanel passPanel = new JPanel();
+		passPanel.setLayout(new BoxLayout(passPanel,BoxLayout.Y_AXIS));
+		passPanel.add(new JLabel("Password:"));
+		passPanel.add(passwordField);
+		notification.add(userPanel);
+		notification.add(passPanel);
+		
+		
 		JPanel p5 = new JPanel();
 		save = new JButton("Save");
 		save.addActionListener(new ActionListener(){
@@ -145,7 +181,9 @@ public class OptionPanel extends JPanel{
 		mpanel.add(p2);
 		mpanel.add(p3);
 		mpanel.add(p4);	
+		mpanel.add(notification);
 		mpanel.add(p5);
+		
 	}
 	
 	public void setBack()
@@ -158,7 +196,7 @@ public class OptionPanel extends JPanel{
 		location = config.getLocation();
 		every = config.getAllEvents();
 		filesys = config.getScanFile();
-		rec = config.getScanRec();	
+		rec = config.getScanRec();
 		
 		path0.setText(datPath);
 		path1.setText(dirPath);
@@ -168,6 +206,10 @@ public class OptionPanel extends JPanel{
 		all.setSelected(every);
 		choice.setSelectedIndex(filesys);
 		choice2.setSelectedIndex(rec);
+		
+		emailNotificationEnabled.setSelected(emailEnabled);
+		usernameField.setText(emailUsername);
+		passwordField.setText(emailPassword);
 	}
 	
 	public void saveSettings()
@@ -188,10 +230,15 @@ public class OptionPanel extends JPanel{
 		config.setTopArtists(location + "");
 		config.setScanFile(filesys + "");
 		config.setScanRec(rec + "");
+	
 		if(every)
 			config.setAllEvents("true");
 		else
 			config.setAllEvents("false");
+		
+		config.setEmailEnabled(emailNotificationEnabled.isSelected());
+		config.setEmailAddress(usernameField.getText());
+		config.setEmailPass(passwordField.getText());
 		
 		config.writePreferences();
 	}
