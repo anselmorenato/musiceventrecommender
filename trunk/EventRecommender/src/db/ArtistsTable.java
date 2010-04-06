@@ -93,12 +93,6 @@ public class ArtistsTable extends DatabaseTable{
 		}
 	}
 	
-	/*"mbid character(37) NOT NULL," +
-	"name VARCHAR(80) NOT NULL," +
-	"playcount integer DEFAULT 0," +
-	"PRIMARY KEY (mbid)" +
-	");";*/
-	
 	/**
 	 * Creates an Artist object from a single entry in the result set
 	 * @param rs - A result set
@@ -131,14 +125,15 @@ public class ArtistsTable extends DatabaseTable{
 	 */
 	public Artist getArtist(String mbid) throws DatabaseException {
 		String sql = "SELECT * FROM artists " +
-				"WHERE mbid = " + mbid;
+				"WHERE mbid = ?";
 		
 		ResultSet rs;
 		
 		
 		try {
-			Statement select = conn.createStatement();
-			rs = select.executeQuery(sql);
+			PreparedStatement select = conn.prepareStatement(sql);
+			select.setString(1, mbid);
+			rs = select.executeQuery();
 		} catch (SQLException e) {
 			throw new DatabaseException(e);
 		}
