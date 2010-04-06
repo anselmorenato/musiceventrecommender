@@ -32,10 +32,12 @@ public class MusicImporter implements ScannerObserver, Schedulable{
 	}
 	
 	private void scanLibrary(String path) {
-		
+		ITunesScanner its = new ITunesScanner(path);
+		its.addObserver(this);
+		its.scan();
 	}
 	
-	public void songFound(String songName, String artistName,int playcount) {	
+	public void songFound(String songName, String artistName, int playcount) {	
 		//Get artist data
 		Artist artist = lastfm.lookupArtistByName(artistName);
 		if (artist == null)
@@ -45,12 +47,11 @@ public class MusicImporter implements ScannerObserver, Schedulable{
 		if (song == null)
 			return;
 		
-		/* TODO: Use real playcount here */
-		//song.setPlaycount(playcount);
-		Random rand = new Random();
+		song.setPlaycount(playcount);
+		/*Random rand = new Random();
 		int max = 200;
 		int randPlaycount = rand.nextInt(max);
-		song.setPlaycount(randPlaycount);
+		song.setPlaycount(randPlaycount);*/
 		
 		artist.incrementPlaycount(playcount);
 		
@@ -65,7 +66,10 @@ public class MusicImporter implements ScannerObserver, Schedulable{
 	}
 
 	public boolean run() {
-		scanDirectory(this.libraryPath);
+		if(this.metadataPath.length() > 0)
+			this.scanLibrary(metadataPath);
+		else
+			scanDirectory(this.libraryPath);
 		return true;
 	}
 
