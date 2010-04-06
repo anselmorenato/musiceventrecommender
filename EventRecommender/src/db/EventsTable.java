@@ -221,6 +221,7 @@ public class EventsTable extends DatabaseTable {
 
 			ResultSet r = prep.executeQuery();
 			int count = r.getInt(1);
+			r.close();
 			return (count > 0);
 		} catch (SQLException e) {
 			throw new DatabaseException(e);

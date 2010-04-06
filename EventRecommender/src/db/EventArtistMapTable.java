@@ -62,8 +62,11 @@ public class EventArtistMapTable extends DatabaseTable {
 			int rows = 0;
 
 			for (Artist a : e.getArtists()) {
+				if (a.getMBID() == null)
+					continue;
+				
 				stat.setInt(1, e.getID());
-				stat.setString(1, a.getMBID());
+				stat.setString(2, a.getMBID());
 				rows += stat.executeUpdate();
 			}
 			return rows;
@@ -82,8 +85,11 @@ public class EventArtistMapTable extends DatabaseTable {
 			int rows = 0;
 
 			for (Artist a : e.getArtists()) {
-				stat.setString(1, a.getMBID());
+				if (a.getMBID() == null)
+					continue;
+				
 				stat.setInt(1, e.getID());
+				stat.setString(2, a.getMBID());
 				rows += stat.executeUpdate();
 			}
 			return rows;
