@@ -102,12 +102,7 @@ public class SimilarArtistsTable extends DatabaseTable {
 		}*/
 		return 0;
 	}
-	
-	/*"artist character(37) NOT NULL," +
-		"similar character(37) NOT NULL," +
-		"PRIMARY KEY (artist,similar)," +
-		"FOREIGN KEY (similar) REFERENCES artists(mbid)" +*/
-	
+		
 	/**
 	 * Get the mbids of artists similar to the given artist
 	 * @param a the artist
@@ -117,15 +112,16 @@ public class SimilarArtistsTable extends DatabaseTable {
 	public List<String> getSimilar(Artist a) throws DatabaseException {
 		String sql = "SELECT similar " +
 				"FROM similarartists " +
-				"WHERE artist = " +
-				a.getMBID();
+				"WHERE artist = ?";
+		
 		
 		LinkedList<String> mbids = new LinkedList<String>();
 		
 		ResultSet rs;
 		try {
-			Statement select = conn.createStatement();
-			rs = select.executeQuery(sql);
+			PreparedStatement p = conn.prepareStatement(sql);
+			p.setString(1, a.getMBID());
+			rs = p.executeQuery();
 		} catch (SQLException e) {
 			throw new DatabaseException(e);
 		}
