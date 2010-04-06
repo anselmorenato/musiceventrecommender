@@ -164,14 +164,15 @@ public class ArtistsTable extends DatabaseTable{
 	public LinkedList<Artist> getMostPlayedArtists(int limit) throws DatabaseException {
 		String sql = "SELECT * FROM Artists " +
 				"ORDER BY playcount " +
-				"LIMIT " + limit;
+				"LIMIT ?";
 		
 		ResultSet rs;
 		LinkedList<Artist> top = new LinkedList<Artist>();
 		
 		try {
-			Statement select = conn.createStatement();
-			rs = select.executeQuery(sql);
+			PreparedStatement select = conn.prepareStatement(sql);
+			select.setInt(1, limit);
+			rs = select.executeQuery();
 		} catch (SQLException e) {
 			throw new DatabaseException(e);
 		}
@@ -201,7 +202,7 @@ public class ArtistsTable extends DatabaseTable{
 	 */
 	public LinkedList<Artist> getAllArtists() throws DatabaseException {
 		String sql = "SELECT * FROM Artists " +
-				"ORDER BY name ";
+				"ORDER BY name";
 		
 		ResultSet rs;
 		LinkedList<Artist> all = new LinkedList<Artist>();
