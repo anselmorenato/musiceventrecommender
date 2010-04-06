@@ -1,5 +1,6 @@
 package scanners;
 
+import java.util.HashMap;
 import java.util.Random;
 
 import music.Artist;
@@ -17,12 +18,14 @@ public class MusicImporter implements ScannerObserver, Schedulable{
 	private String libraryPath;
 	private String metadataPath;
 	private LastFM lastfm;
+	private HashMap<String, Artist> foundArtists;
 	
 	public MusicImporter(Database db, String libraryPath, String libraryMetadataPath) {
 		this.db = db;
 		this.libraryPath = libraryPath;
 		this.metadataPath = libraryMetadataPath;
 		this.lastfm = new LastFM();
+		this.foundArtists = new HashMap<String, Artist>();
 	}
 	
 	private void scanDirectory(String path) {
@@ -39,7 +42,17 @@ public class MusicImporter implements ScannerObserver, Schedulable{
 	
 	public void songFound(String songName, String artistName, int playcount) {	
 		//Get artist data
-		Artist artist = lastfm.lookupArtistByName(artistName);
+		Artist artist;
+		
+		if (this.foundArtists.containsKey(artistName))
+			artist = this.foundArtists.get(artistName);
+		else {
+			artist = lastfm.lookupArtistByName(artistName);
+			Artist stored = this.foundArtists.get(artist.getName());
+			if (stored != null)
+				artist.setPlaycount(stored.getPlaycount());
+		}
+		
 		if (artist == null)
 			return;
 		
@@ -54,6 +67,7 @@ public class MusicImporter implements ScannerObserver, Schedulable{
 		song.setPlaycount(randPlaycount);*/
 		
 		artist.incrementPlaycount(playcount);
+		this.foundArtists.put(artist.getName(), artist);
 		
 		// Sync with database
 		try {
