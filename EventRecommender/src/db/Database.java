@@ -3,6 +3,7 @@ package db;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -294,13 +295,14 @@ public class Database {
 			String sql = "SELECT * FROM artists " +
 			"WHERE mbid IN " +
 			"(SELECT artist FROM eventartistmap " +
-			"WHERE event = " + ev.getID() +")";
+			"WHERE event = ?)";
 
 			ResultSet rs;
 
 			try {
-				Statement select = conn.createStatement();
-				rs = select.executeQuery(sql);
+				PreparedStatement select = conn.prepareStatement(sql);
+				select.setInt(1, ev.getID());
+				rs = select.executeQuery();
 			} catch (SQLException e) {
 				throw new DatabaseException(e);
 			}
