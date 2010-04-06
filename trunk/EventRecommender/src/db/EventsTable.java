@@ -106,7 +106,7 @@ public class EventsTable extends DatabaseTable {
 		try 
 		{
 			VenuesTable ve = new VenuesTable(conn);		
-			Venue v = ve.getVenue(id);
+			Venue v = ve.getVenue(venue);
 			ev.setVenue(v);
 		}
 		catch (DatabaseException e) {

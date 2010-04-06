@@ -72,7 +72,10 @@ public class VenuesTable extends DatabaseTable {
 			stat.setInt(1, v.getID());
 			stat.setString(2, v.getName());
 			stat.setString(3, v.getCity());
-			stat.setString(4, v.getCountry());
+			if(v.getCountry() != null)
+				stat.setString(4, v.getCountry());
+			else
+				stat.setString(4, "-");
 			stat.setString(5, v.getStreet());
 			stat.setString(6, v.getPostalcode());
 			stat.setDouble(7, v.getLatitude());
@@ -94,7 +97,10 @@ public class VenuesTable extends DatabaseTable {
 			Venue v = (Venue) item;
 			stat.setString(1, v.getName());
 			stat.setString(2, v.getCity());
-			stat.setString(3, v.getCountry());
+			if(v.getCountry() != null)
+				stat.setString(3, v.getCountry());
+			else
+				stat.setString(3, "-");
 			stat.setString(4, v.getStreet());
 			stat.setString(5, v.getPostalcode());
 			stat.setDouble(6, v.getLatitude());
@@ -113,7 +119,7 @@ public class VenuesTable extends DatabaseTable {
 		Venue v = (Venue) item;
 		try {
 			PreparedStatement prep = conn.prepareStatement(
-					"select count(id) from venue where id=?");
+					"select count(id) from venues where id=?");
 			prep.setInt(1, v.getID());
 
 			ResultSet r = prep.executeQuery();
