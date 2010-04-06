@@ -17,14 +17,12 @@ import db.DatabaseException;
 public class ListPanel extends JPanel{
 	
     private JTextArea textArea;
-    private LinkedList<String> ls;
 	private Database data;
 	
 	public JPanel panel; 
 	
 	public ListPanel(Database data)
 	{
-        ls = new LinkedList<String>();
 		this.data = data;
 		
 		initialization();
@@ -32,17 +30,13 @@ public class ListPanel extends JPanel{
 	
 	public void initialization()
 	{
-		String ev = getEvents();
-		if(ev == null){
-			ev = "Music events not found!";
-		}
-		textArea = new JTextArea(ev);
+		textArea = new JTextArea();
 		textArea.setEditable(false);
         textArea.setColumns(50);
         textArea.setLineWrap(true);
         textArea.setRows(5);
         textArea.setWrapStyleWord(true);
-
+        getEvents();
 
 		JScrollPane scrollPane = new JScrollPane(textArea);
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -55,7 +49,7 @@ public class ListPanel extends JPanel{
 		
 	}
 	
-	public String getEvents()
+	public void getEvents()
 	{
 		LinkedList<Event> events;
 		
@@ -64,39 +58,35 @@ public class ListPanel extends JPanel{
 		events = data.getAllEvents();
 		}
 		catch (DatabaseException e) {
-			return null;
+			return;
 		}
 		
 		String date = "";
-		String cell = "";
 		for(Event e: events)
 		{
 			if(!date.equals(e.getDate()))
 			{
-				if(cell.length()!= 0)
-				{
-					ls.add(cell);
-				}
 				date = e.getDate();
-				cell += date + "/n";
+				textArea.append("\n" +date + "\n");
 			}
-			cell += "/n" + e.getTitle() + "/n" + "Artist(s): ";
+			textArea.append("\nTitle: " + e.getTitle() + "\n\n" + "Artist(s): \n");
 			for(Artist art: e.getArtists())
 			{
-				cell = cell + art.getName();
+				textArea.append(art.getName()+"\n");
 			}
-			cell += "/nVenue:/n";
 			Venue v = e.getVenue();
-			cell += v.getName() + "/n" +
-			v.getStreet() + "/n" + v.getPostalcode() + "/n" +
-			v.getCity() + ", " + v.getCountry() +"/n";
-			cell += "Latitude : " + v.getLatitude();
-			cell += "/nLongitude: " + v.getLongitude();
-			cell += "/nDescription: " + e.getDescription();
-			cell += "/nTicket site: " + e.getTicketsite();
-			cell += "/nWebsite: " +e.getWebsite() + "/n";	
+			if(v != null){
+			textArea.append("\nVenue:\n");
+			textArea.append(v.getName() + "\n" +
+			v.getStreet() + "\n" + v.getPostalcode() + "\n" +
+			v.getCity() + ", " + v.getCountry() +"\n");
+			textArea.append("Latitude : " + v.getLatitude());
+			textArea.append("\nLongitude: " + v.getLongitude());
+			}
+			textArea.append("\nDescription: " + e.getDescription());
+			textArea.append("\nTicket site: " + e.getTicketsite());
+			textArea.append("\nWebsite: " +e.getWebsite() + "\n");	
 		}
-		return cell;
 	}
 	
 }

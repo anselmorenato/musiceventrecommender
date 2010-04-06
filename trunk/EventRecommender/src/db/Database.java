@@ -206,6 +206,10 @@ public class Database {
 		
 		map.insert(event);
 		
+		VenuesTable venues = new VenuesTable(conn);
+		
+		sync(venues, event.getVenue());
+		
 		events.closeConnection();
 	}
 	
@@ -289,8 +293,8 @@ public class Database {
 		{
 			String sql = "SELECT * FROM artists " +
 			"WHERE mbid IN " +
-			"SELECT artist FROM eventartistmap" +
-			"WHERE event = " + ev.getID();
+			"(SELECT artist FROM eventartistmap " +
+			"WHERE event = " + ev.getID() +")";
 
 			ResultSet rs;
 

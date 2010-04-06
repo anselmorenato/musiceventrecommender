@@ -63,8 +63,7 @@ public class EventArtistMapTable extends DatabaseTable {
 
 			for (Artist a : e.getArtists()) {
 				if (a.getMBID() == null)
-					continue;
-				
+					continue;			
 				if (contains(e, a))
 					continue;
 				
@@ -90,7 +89,6 @@ public class EventArtistMapTable extends DatabaseTable {
 			for (Artist a : e.getArtists()) {
 				if (a.getMBID() == null)
 					continue;
-				
 				if (contains(e, a))
 					continue;
 				
@@ -106,15 +104,22 @@ public class EventArtistMapTable extends DatabaseTable {
 
 	@Override
 	public boolean contains(MusicItem item) throws DatabaseException {
-		return false;
+		Event e = (Event) item;
+		for (Artist a : e.getArtists()) {
+			if (a.getMBID() == null)
+				continue;
+			if(!contains(e,a))return false;
+		}
+		return true;
 	}
 	
 	public boolean contains(Event event, Artist artist) throws DatabaseException {
 		try {
 			PreparedStatement prep = conn.prepareStatement(
 					"select count(*) from eventartistmap where artist=? AND event=?");
-			prep.setString(1, artist.getMBID());
-			prep.setInt(2, event.getID());
+			prep.setInt(1, event.getID());
+			prep.setString(2, artist.getMBID());
+
 
 			ResultSet r = prep.executeQuery();
 			int count = r.getInt(1);

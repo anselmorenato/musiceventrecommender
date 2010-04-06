@@ -9,6 +9,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import Application.Preferences;
+
 import db.Database;
 import db.DatabaseException;
 
@@ -16,9 +18,12 @@ public class Start extends JFrame{
 
 	public static void main(String args[]) {
 		ListPanel ls;
+		Preferences config = new Preferences("config.txt");
+		config.readPreferences();
+		String datPath = config.getDatabasePath();
 		try
 		{
-			Database db = new Database("C:/Documents and Settings/Administrateur/Bureau");	
+			Database db = new Database(datPath);	
 			ls = new ListPanel(db);
 		}
 		catch(DatabaseException e)

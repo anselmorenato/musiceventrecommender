@@ -148,7 +148,7 @@ public class VenuesTable extends DatabaseTable {
 	
 	public Venue getVenue(int id)throws DatabaseException {
 		String sql = "SELECT * FROM venues " +
-		"WHERE id = ";
+			"WHERE id = ?";
 
 		ResultSet rs;
 		
