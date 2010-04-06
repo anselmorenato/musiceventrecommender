@@ -1,9 +1,15 @@
 package schedulers;
 
 import java.util.Calendar;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import notification.EmailNotifier;
+import notification.EmailSender;
+import notification.GMailSender;
+
+import music.Event;
 import music.Location;
 import recommendation.RecommendationGenerator;
 import scanners.MusicImporter;
@@ -44,6 +50,26 @@ public class Scheduler extends TimerTask{
 		} catch (DatabaseException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private void sendNotification() {
+		boolean enabled = config.getEmailEnabled();
+		
+		if (!enabled)
+			return;
+		
+		String user = config.getEmailUser();
+		String pass = config.getEmailPassword();
+		EmailSender gmail = new GMailSender(user, pass);
+		
+		List<Event> events;
+		try {
+			events = db.getAllEvents();
+			EmailNotifier email = new EmailNotifier(gmail, events);
+			email.run();
+		} catch (DatabaseException e) {
+		}
+		
 	}
 	
 	public void run()
@@ -115,6 +141,7 @@ public class Scheduler extends TimerTask{
 			if(Math.abs(now.get(Calendar.DAY_OF_MONTH)- config.getDayScan()) > 7)
 			{
 				recommend.run();
+				notify();
 				config.setDayRec(now.get(Calendar.DAY_OF_MONTH)+"");
 				config.setMonthRec(now.get(Calendar.MONTH)+"");
 				config.setYearRec(now.get(Calendar.YEAR)+"");
@@ -124,6 +151,7 @@ public class Scheduler extends TimerTask{
 			if(now.get(Calendar.MONTH) != config.getMonthRec())
 			{
 				recommend.run();
+				notify();
 				config.setDayRec(now.get(Calendar.DAY_OF_MONTH)+"");
 				config.setMonthRec(now.get(Calendar.MONTH)+"");
 				config.setYearRec(now.get(Calendar.YEAR)+"");
@@ -133,6 +161,7 @@ public class Scheduler extends TimerTask{
 			if(now.get(Calendar.YEAR) != config.getYearRec())
 			{
 				recommend.run();
+				notify();
 				config.setDayRec(now.get(Calendar.DAY_OF_MONTH)+"");
 				config.setMonthRec(now.get(Calendar.MONTH)+"");
 				config.setYearRec(now.get(Calendar.YEAR)+"");
@@ -142,6 +171,7 @@ public class Scheduler extends TimerTask{
 			if(now.get(Calendar.DAY_OF_MONTH) != config.getDayRec())
 			{
 				recommend.run();
+				notify();
 				config.setDayRec(now.get(Calendar.DAY_OF_MONTH)+"");
 				config.setMonthRec(now.get(Calendar.MONTH)+"");
 				config.setYearRec(now.get(Calendar.YEAR)+"");
