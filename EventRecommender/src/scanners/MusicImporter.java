@@ -48,6 +48,8 @@ public class MusicImporter implements ScannerObserver, Schedulable{
 			artist = this.foundArtists.get(artistName);
 		else {
 			artist = lastfm.lookupArtistByName(artistName);
+			if (artist == null)
+				return;
 			Artist stored = this.foundArtists.get(artist.getName());
 			if (stored != null)
 				artist.setPlaycount(stored.getPlaycount());

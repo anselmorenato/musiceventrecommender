@@ -101,11 +101,15 @@ public class RecommendationGenerator implements Schedulable{
 					LinkedList<Event> artEvent= lastfm.getArtistEvents(art);
 					for(Event e: artEvent)
 					{
-						if(!recommendations.contains(e))
-						{
-							//if(local.compareByCity(e.getVenue().getCity())
-							//		&& local.compareByCountry(e.getVenue().getCountry()))
+						if(!recommendations.contains(e)){
 								recommendations.add(e);
+								int i = recommendations.indexOf(e);
+								recommendations.get(i).addArtist(art);
+						}
+						else
+						{
+							int i = recommendations.indexOf(e);
+							recommendations.get(i).addArtist(art);
 						}
 					}
 				}
@@ -115,12 +119,9 @@ public class RecommendationGenerator implements Schedulable{
 					LinkedList<Event> artEvent= lastfm.getArtistEvents(arty);
 					for(Event e: artEvent)
 					{
-						if(!recommendations.contains(e))
-						{
 							if(local.compareByCity(e.getVenue().getCity())
 									&& local.compareByCountry(e.getVenue().getCountry()))
 								recommendations.add(e);
-						}
 					}
 				}
 				*/
@@ -129,17 +130,20 @@ public class RecommendationGenerator implements Schedulable{
 		// get the events of the remaining artists.
 		if(all)
 		{
-			System.out.println("oh");
 			for(Artist anArtist: allArtists)
 			{
 				LinkedList<Event> artEvent= lastfm.getArtistEvents(anArtist);
 				for(Event e: artEvent)
 				{
-					if(!recommendations.contains(e))
+					if(!recommendations.contains(e)){
+							recommendations.add(e);
+							int i = recommendations.indexOf(e);
+							recommendations.get(i).addArtist(anArtist);
+					}
+					else
 					{
-						//if(local.compareByCity(e.getVenue().getCity())
-						//		&& local.compareByCountry(e.getVenue().getCountry()))
-						recommendations.add(e);
+						int i = recommendations.indexOf(e);
+						recommendations.get(i).addArtist(anArtist);
 					}
 				}
 			}

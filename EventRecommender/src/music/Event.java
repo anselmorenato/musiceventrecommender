@@ -137,11 +137,6 @@ public class Event implements MusicItem {
 		if (getClass() != obj.getClass())
 			return false;
 		Event other = (Event) obj;
-		if (artists == null) {
-			if (other.getArtists() != null)
-				return false;
-		} else if (!artists.equals(other.getArtists()))
-			return false;
 		if (date == null) {
 			if (other.getDate() != null)
 				return false;
@@ -151,11 +146,6 @@ public class Event implements MusicItem {
 			if (other.getTitle() != null)
 				return false;
 		} else if (!title.equals(other.getTitle()))
-			return false;
-		if (venue == null) {
-			if (other.getVenue() != null)
-				return false;
-		} else if (!venue.equals(other.getVenue()))
 			return false;
 		return true;
 	}

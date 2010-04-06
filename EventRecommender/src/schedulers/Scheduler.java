@@ -152,15 +152,4 @@ public class Scheduler extends TimerTask{
 		config.writePreferences();
 	}
 	
-	public static void main(String[] args)
-	{
-		Timer timer = new Timer();
-		Calendar date = Calendar.getInstance();
-
-		timer.schedule(
-				new Scheduler(),
-				date.getTime(),
-				1000 * 60 * 60 * 24 * 1
-		);
-	}
 }
