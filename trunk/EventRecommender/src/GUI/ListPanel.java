@@ -3,7 +3,6 @@ package GUI;
 import java.awt.BorderLayout;
 import java.util.LinkedList;
 
-import javax.swing.DefaultListModel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -32,18 +31,18 @@ public class ListPanel extends JPanel{
 	{
 		textArea = new JTextArea();
 		textArea.setEditable(false);
-        textArea.setColumns(50);
+        textArea.setColumns(30);
         textArea.setLineWrap(true);
         textArea.setRows(5);
         textArea.setWrapStyleWord(true);
         getEvents();
 
 		JScrollPane scrollPane = new JScrollPane(textArea);
-		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		
 		
 		panel = new JPanel(new BorderLayout());
-		panel.add(textArea);
+		panel.add(scrollPane);
 		panel.setVisible(true);
 		
 		

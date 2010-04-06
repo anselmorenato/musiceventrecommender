@@ -68,19 +68,19 @@ public class OptionPanel extends JPanel{
 		
 		JPanel p0 = new JPanel();
 		p0.setLayout(new BoxLayout(p0,BoxLayout.Y_AXIS));
-		path0 = new JTextField(datPath,50);
+		path0 = new JTextField(datPath,30);
 		p0.add(new JLabel("Enter the path to your database:"));
 		p0.add(path0);
 		
 		JPanel p1 = new JPanel();
 		p1.setLayout(new BoxLayout(p1,BoxLayout.Y_AXIS));
-		path1 = new JTextField(dirPath,50);
+		path1 = new JTextField(dirPath,30);
 		p1.add(new JLabel("Enter the path to your music directory:"));
 		p1.add(path1);	
 		
 		JPanel p2 = new JPanel();
 		p2.setLayout(new BoxLayout(p2,BoxLayout.Y_AXIS));
-		path2 = new JTextField(libPath,50);
+		path2 = new JTextField(libPath,30);
 		p2.add(new JLabel("Enter the path to your XML ITunes Library:"));
 		p2.add(path2);
 		

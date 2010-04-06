@@ -204,7 +204,7 @@ public class Database {
 		
 		EventArtistMapTable map = new EventArtistMapTable(conn);
 		
-		map.insert(event);
+		sync(map,event);
 		
 		VenuesTable venues = new VenuesTable(conn);
 		
