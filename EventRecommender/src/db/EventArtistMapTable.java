@@ -117,8 +117,8 @@ public class EventArtistMapTable extends DatabaseTable {
 		try {
 			PreparedStatement prep = conn.prepareStatement(
 					"select count(*) from eventartistmap where event = ? AND artist=?");
-			prep.setString(1, artist.getMBID());
-			prep.setInt(2, event.getID());
+			prep.setString(2, artist.getMBID());
+			prep.setInt(1, event.getID());
 			
 			ResultSet r = prep.executeQuery();
 			int count = r.getInt(1);
