@@ -76,9 +76,10 @@ public class ListPanel extends JPanel{
 			Venue v = e.getVenue();
 			if(v != null){
 			textArea.append("\nVenue:\n");
-			textArea.append(v.getName() + "\n" +
-			v.getStreet() + "\n" + v.getPostalcode() + "\n" +
-			v.getCity() + ", " + v.getCountry() +"\n");
+			textArea.append(v.getName() + "\n"); 
+			if(v.getStreet() != null)textArea.append(v.getStreet() + "\n"); 
+			if(v.getPostalcode() != null)textArea.append(v.getPostalcode() + "\n");
+			textArea.append(v.getCity() + ", " + v.getCountry() +"\n");
 			textArea.append("Latitude : " + v.getLatitude());
 			textArea.append("\nLongitude: " + v.getLongitude());
 			}
