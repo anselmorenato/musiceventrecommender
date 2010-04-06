@@ -55,14 +55,14 @@ public class LastFM {
 
 		// Get similar artists
 		Collection<net.roarsoftware.lastfm.Artist> similar = 
-			net.roarsoftware.lastfm.Artist.getSimilar(name, apiKey);
+			net.roarsoftware.lastfm.Artist.getSimilar(name,10,apiKey);
 
 		for (net.roarsoftware.lastfm.Artist la : similar) {
 			Artist a = translateArtist(la);
 			if (a != null)
 				artist.addSimilarArtist(a);
 		}
-
+		
 		return artist;
 	}
 
