@@ -28,6 +28,9 @@ public class Preferences {
 	private String dr1;
 	private String dr2;
 	private String dr3;
+	private String emailEnabled;
+	private String emailUser;
+	private String emailPass;
 	
 	// default values
 	private String defaultDatabasePath = "musiceventdata.db";
@@ -39,6 +42,7 @@ public class Preferences {
 	private String defaultScanAll = "true";
 	private String defaultScanFile = "1";
 	private String defaultScanRec = "0";
+	private String defaultEmailEnabled = "0";
 	
 	// keys
 	private String dbKey = "databasePath";
@@ -55,6 +59,9 @@ public class Preferences {
 	private String dr1Key = "dayRec";
 	private String dr2Key = "monthRec";
 	private String dr3Key = "yearRec";
+	private String emailEnabledKey = "emailEnabled";
+	private String emailUserKey = "gmailAddress";
+	private String emailPassKey = "gmailPassword";
 	
 	public Preferences(String configPath) {
 		this.configFilePath = configPath;
@@ -92,6 +99,7 @@ public class Preferences {
 		this.dr1 = "-8";
 		this.dr2 = "-1";
 		this.dr3 = "0";
+		this.emailEnabled = this.defaultEmailEnabled;
 	}
 	
 	private void setDefaultProperties() {
@@ -111,6 +119,9 @@ public class Preferences {
 		configProperties.setProperty(dr1Key,"-8");
 		configProperties.setProperty(dr2Key,"-1");
 		configProperties.setProperty(dr3Key,"0");
+		configProperties.setProperty(this.emailEnabledKey, this.defaultEmailEnabled);
+		configProperties.setProperty(this.emailUserKey, "");
+		configProperties.setProperty(this.emailPassKey, "");
 	}
 	
 	public boolean readPreferences() {
@@ -141,10 +152,64 @@ public class Preferences {
 		this.dr1 = configProperties.getProperty(dr1Key);
 		this.dr2 = configProperties.getProperty(dr2Key);
 		this.dr3 = configProperties.getProperty(dr3Key);
+		this.emailEnabled = configProperties.getProperty(emailEnabledKey);
+		this.emailUser = configProperties.getProperty(emailUserKey);
+		this.emailPass = configProperties.getProperty(emailPassKey);
 		
 		return true;
 	}
 	
+	/**
+	 * @return the emailEnabled
+	 */
+	public boolean getEmailEnabled() {
+		if ("1".compareTo(emailEnabled) == 0)
+			return true;
+		
+		return false;
+	}
+
+	/**
+	 * @param emailEnabled the emailEnabled to set
+	 */
+	public void setEmailEnabled(boolean enabled) {
+		if (enabled)
+			this.emailEnabled = "1";
+		else
+			this.emailEnabled = "0";
+		configProperties.setProperty(this.emailEnabledKey, this.emailEnabled);
+	}
+
+	/**
+	 * @return the email address
+	 */
+	public String getEmailUser() {
+		return emailUser;
+	}
+
+	/**
+	 * @param emailUser the emailUser to set
+	 */
+	public void setEmailAddress(String emailUser) {
+		this.emailUser = emailUser;
+		configProperties.setProperty(this.emailUserKey, this.emailUser);
+	}
+
+	/**
+	 * @return the emailPass
+	 */
+	public String getEmailPassword() {
+		return emailPass;
+	}
+
+	/**
+	 * @param emailPass the emailPass to set
+	 */
+	public void setEmailPass(String emailPass) {
+		this.emailPass = emailPass;
+		configProperties.setProperty(this.emailPassKey, this.emailPass);
+	}
+
 	public boolean writePreferences() {
 		try {
 			FileOutputStream out = new FileOutputStream(this.configFilePath);
