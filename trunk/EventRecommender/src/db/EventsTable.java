@@ -213,7 +213,17 @@ public class EventsTable extends DatabaseTable {
 	
 	@Override
 	public boolean contains(MusicItem item) throws DatabaseException {
-		// TODO Auto-generated method stub
-		return false;
+		Event event = (Event) item;
+		try {
+			PreparedStatement prep = conn.prepareStatement(
+					"select count(id) from events where id=?");
+			prep.setInt(1, event.getID());
+
+			ResultSet r = prep.executeQuery();
+			int count = r.getInt(1);
+			return (count > 0);
+		} catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
 	}
 }
